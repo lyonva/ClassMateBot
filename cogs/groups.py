@@ -1,6 +1,7 @@
 # Copyright (c) 2021 War-Keeper
 import discord
 from discord.ext import commands
+from discord.utils import get
 import os
 import csv
 import sys
@@ -9,6 +10,7 @@ from discord.ext.commands.core import group
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
+# bot = Bot(intents=intents, command_prefix="$")
 
 
 # -----------------------------------------------------------
@@ -173,6 +175,60 @@ class Groups(commands.Cog):
 
         if count >= 20:
             await ctx.send(embed=embed2)
+
+    # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: join(self, ctx, arg='group', arg2='-1')
+    #    Description: joins the user to the given group
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    - arg: the name of the group
+    #    - arg2: the number of the group
+    #    Outputs: adds the user to the given group or returns an error if the group is invalid or in case of
+    #             syntax errors
+    # -------------------------------------------------------------------------------------------------------
+    @commands.command(name='connect', help='To use the connect command, do: $connect \'Group\' <Num> \n \
+    ( For example: $connect Group 0 )', pass_context=True)
+    async def connect(self, ctx, arg='group', arg2='-1'):
+        # get the name of the caller
+        member_name = ctx.message.author.display_name.upper()
+
+        # get the arguments for the group to join
+        group_num = int(arg2)
+
+        members_in_group = [row[0] for row in db.query(
+            'SELECT member_name FROM group_members WHERE guild_id = %s AND group_num = %s',
+            (ctx.guild.id, group_num)
+        )]
+
+        for member in members_in_group:
+            group_identifier = "group_identifier_" + str(group_num)
+            print(group_identifier)
+            role = get(member.server.roles, name=group_identifier)
+            await bot.add_roles(member, role)   
+
+
+        if len(members_in_group) == 6:
+            await ctx.send('A group cannot have more than 6 people!')
+        else:
+            if member_name in members_in_group:
+                await ctx.send(f'You are already in group {group_num}')
+                return
+
+            db.query(
+                'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
+                (ctx.guild.id, group_num, member_name)
+            )
+            await ctx.send(f'You are now in Group {group_num}!')
+
+    # this handles errors related to the connect command
+    @connect.error
+    async def connect_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('To use the connect command, do: $join \'Group\' <Num> \n ( For example: $join Group 0 )')
+        print(error)
+    # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
 
     # -----------------------------------------------------------
     # This is a testing arg, not really used for anything else but adding to the csv file
