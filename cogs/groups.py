@@ -1,16 +1,13 @@
 # Copyright (c) 2021 War-Keeper
+import os
+import sys
+
 import discord
 from discord.ext import commands
 from discord.utils import get
-import os
-import csv
-import sys
-
-from discord.ext.commands.core import group
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
-# bot = Bot(intents=intents, command_prefix="$")
 
 
 # -----------------------------------------------------------
@@ -25,6 +22,79 @@ class Groups(commands.Cog):
     # -----------------------------------------------------------
     def __init__(self, bot):
         self.bot = bot
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: reset(self, ctx)
+    #    Description: deletes all group roles in the server
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: confirms role deletion
+    # -------------------------------------------------------------------------------------------------------
+    @commands.command(name="reset", help="Resets group channels and roles. DO NOT USE IN PRODUCTION!")
+    async def reset(self, ctx):
+        await ctx.send('Deleting all roles...')
+
+        for i in range(100):
+            role_name = "group_" + str(i)
+            role = get(ctx.message.guild.roles, name=role_name)
+            await role.delete()
+
+        print("Roles deleted!")
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: startupgroups(self, ctx)
+    #    Description: creates roles for the groups
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: creates roles for groups
+    # -------------------------------------------------------------------------------------------------------
+    @commands.command(name="startupgroups", help="Creates group roles for members")
+    async def startupgroups(self, ctx):
+        await ctx.send('Creating roles....')
+
+        for i in range(50):
+            role_name = "group_" + str(i)
+            if discord.utils.get(ctx.guild.roles, name=role_name) is None:
+                await ctx.guild.create_role(name=role_name)
+
+        print("Roles created successfully!")
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: connect(self, ctx)
+    #    Description: connects all users with their groups
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: creates a private text channel for all groups
+    # -------------------------------------------------------------------------------------------------------
+    @commands.command(name="connect", help="Creates group roles for members")
+    async def connect(self, ctx):
+
+        for i in range(100):
+            group_name = "group-" + str(i)
+            existing_channel = get(ctx.guild.text_channels, name=group_name)
+            if existing_channel is not None:
+                await existing_channel.delete()
+
+        groups = db.query(
+            'SELECT group_num, array_agg(member_name) '
+            'FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
+            (ctx.guild.id,)
+        )
+
+        for group_num, *_ in groups:
+            role_string = "group_" + str(group_num)
+            user_role = get(ctx.guild.roles, name=role_string)
+
+            overwrites = {
+                ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                ctx.author: discord.PermissionOverwrite(read_messages=True),
+                user_role: discord.PermissionOverwrite(read_messages=True)
+            }
+            group_channel_name = "group-" + str(group_num)
+            channel = await ctx.guild.create_text_channel(group_channel_name, overwrites=overwrites)
 
     # -------------------------------------------------------------------------------------------------------
     #    Function: join(self, ctx, arg='group', arg2='-1')
@@ -42,13 +112,15 @@ class Groups(commands.Cog):
     async def join(self, ctx, arg='group', arg2='-1'):
         # get the name of the caller
         member_name = ctx.message.author.display_name.upper()
+        member = ctx.message.author
 
         # get the arguments for the group to join
         group_num = int(arg2)
 
         if group_num < 0 or group_num > 99:
             await ctx.send('Not a valid group')
-            await ctx.send('To use the join command, do: $join \'Group\' <Num> where 0 <= <Num> <= 99 \n ( For example: $join Group 0 )')
+            await ctx.send('To use the join command, do: $join \'Group\' <Num> where 0 <= <Num> <= 99 \n '
+                           '( For example: $join Group 0 )')
             return
 
         members_in_group = [row[0] for row in db.query(
@@ -67,6 +139,10 @@ class Groups(commands.Cog):
                 'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
                 (ctx.guild.id, group_num, member_name)
             )
+            identifier = "group_" + str(group_num)
+            role = get(ctx.guild.roles, name=identifier)
+            await member.add_roles(role)
+
             await ctx.send(f'You are now in Group {group_num}!')
 
     # this handles errors related to the join command
@@ -92,6 +168,7 @@ class Groups(commands.Cog):
     async def remove(self, ctx, arg='group', arg2='-1'):
         # get the name of the caller
         member_name = ctx.message.author.display_name.upper()
+        member = ctx.message.author
 
         if arg2 == '-1':
             rows_deleted = db.query(
@@ -104,12 +181,15 @@ class Groups(commands.Cog):
             )
             for group_num, *_ in rows_deleted:
                 await ctx.send(f'You have been removed from Group {group_num}!')
+                identifier = "group_" + str(group_num)
+                role = get(ctx.guild.roles, name=identifier)
+                await member.remove_roles(role)
         else:
             group_num = int(arg2)
             if group_num < 0 or group_num > 99:
                 await ctx.send(f'Group {group_num} is not a valid group')
                 await ctx.send('To use the remove command, do: $remove \'Group\' <Num> where 0 <= <Num> <= 99 \n'
-                '( For example: $remove Group 0 )')
+                               '( For example: $remove Group 0 )')
                 return
 
             rows_deleted = db.query(
@@ -120,6 +200,9 @@ class Groups(commands.Cog):
                 'DELETE FROM group_members WHERE guild_id = %s AND group_num = %s AND member_name = %s',
                 (ctx.guild.id, group_num, member_name)
             )
+            identifier = "group_" + str(group_num)
+            role = get(ctx.guild.roles, name=identifier)
+            await member.remove_roles(role)
 
             if len(rows_deleted) > 0:
                 await ctx.send(f'You have been removed from Group {group_num}!')
@@ -148,7 +231,8 @@ class Groups(commands.Cog):
     async def group(self, ctx):
         # load groups csv
         groups = db.query(
-            'SELECT group_num, array_agg(member_name) FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
+            'SELECT group_num, array_agg(member_name) '
+            'FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
             (ctx.guild.id,)
         )
 
@@ -176,60 +260,6 @@ class Groups(commands.Cog):
         if count >= 20:
             await ctx.send(embed=embed2)
 
-    # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
-    # -------------------------------------------------------------------------------------------------------
-    #    Function: join(self, ctx, arg='group', arg2='-1')
-    #    Description: joins the user to the given group
-    #    Inputs:
-    #    - self: used to access parameters passed to the class through the constructor
-    #    - ctx: used to access the values passed through the current context
-    #    - arg: the name of the group
-    #    - arg2: the number of the group
-    #    Outputs: adds the user to the given group or returns an error if the group is invalid or in case of
-    #             syntax errors
-    # -------------------------------------------------------------------------------------------------------
-    @commands.command(name='connect', help='To use the connect command, do: $connect \'Group\' <Num> \n \
-    ( For example: $connect Group 0 )', pass_context=True)
-    async def connect(self, ctx, arg='group', arg2='-1'):
-        # get the name of the caller
-        member_name = ctx.message.author.display_name.upper()
-
-        # get the arguments for the group to join
-        group_num = int(arg2)
-
-        members_in_group = [row[0] for row in db.query(
-            'SELECT member_name FROM group_members WHERE guild_id = %s AND group_num = %s',
-            (ctx.guild.id, group_num)
-        )]
-
-        for member in members_in_group:
-            group_identifier = "group_identifier_" + str(group_num)
-            print(group_identifier)
-            role = get(member.server.roles, name=group_identifier)
-            await bot.add_roles(member, role)   
-
-
-        if len(members_in_group) == 6:
-            await ctx.send('A group cannot have more than 6 people!')
-        else:
-            if member_name in members_in_group:
-                await ctx.send(f'You are already in group {group_num}')
-                return
-
-            db.query(
-                'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
-                (ctx.guild.id, group_num, member_name)
-            )
-            await ctx.send(f'You are now in Group {group_num}!')
-
-    # this handles errors related to the connect command
-    @connect.error
-    async def connect_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send('To use the connect command, do: $join \'Group\' <Num> \n ( For example: $join Group 0 )')
-        print(error)
-    # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
-
     # -----------------------------------------------------------
     # This is a testing arg, not really used for anything else but adding to the csv file
     # -----------------------------------------------------------
@@ -246,7 +276,6 @@ class Groups(commands.Cog):
     #         await ctx.send('You have already registered with the name: ' + member_name.title())
     #
     #     print_pool(student_pool)
-
 
 
 # # ------------------------------------------------------------
