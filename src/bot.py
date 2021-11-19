@@ -9,6 +9,7 @@ from discord import Intents
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, has_permissions, CheckFailure
 from better_profanity import profanity
+
 profanity.load_censor_words()
 
 # ----------------------------------------------------------------------------------------------
@@ -42,28 +43,31 @@ async def on_guild_join(guild):
     for channel in guild.text_channels:
         if channel.permissions_for(guild.me).send_messages and channel.name == "general":
 
-            if 'instructor-commands' not in guild.text_channels:
-                await guild.create_text_channel('instructor-commands')
+            if "instructor-commands" not in guild.text_channels:
+                await guild.create_text_channel("instructor-commands")
                 await channel.send("instructor-commands channel has been added!")
-            if 'q-and-a' not in guild.text_channels:
-                await guild.create_text_channel('q-and-a')
+            if "q-and-a" not in guild.text_channels:
+                await guild.create_text_channel("q-and-a")
                 await channel.send("q-and-a channel has been added!")
 
             if discord.utils.get(guild.roles, name="verified") is None:
-                await guild.create_role(name="verified", colour=discord.Colour(0x2ecc71),
-                                        permissions=discord.Permissions.general())
+                await guild.create_role(
+                    name="verified", colour=discord.Colour(0x2ECC71), permissions=discord.Permissions.general()
+                )
             if discord.utils.get(guild.roles, name="unverified") is None:
-                await guild.create_role(name="unverified", colour=discord.Colour(0xe74c3c),
-                                        permissions=discord.Permissions.none())
+                await guild.create_role(
+                    name="unverified", colour=discord.Colour(0xE74C3C), permissions=discord.Permissions.none()
+                )
                 unverified = discord.utils.get(guild.roles, name="unverified")
                 # unverified members can only see/send messages in general channel until they verify
                 overwrite = discord.PermissionOverwrite()
-                overwrite.update(send_messages = True)
-                overwrite.update(read_messages = True)
+                overwrite.update(send_messages=True)
+                overwrite.update(read_messages=True)
                 await channel.set_permissions(unverified, overwrite=overwrite)
             if discord.utils.get(guild.roles, name="Instructor") is None:
-                await guild.create_role(name="Instructor", colour=discord.Colour(0x3498db),
-                                        permissions=discord.Permissions.all())
+                await guild.create_role(
+                    name="Instructor", colour=discord.Colour(0x3498DB), permissions=discord.Permissions.all()
+                )
             # Assign Verified role to Guild owner
             leader = guild.owner
             leadrole = get(guild.roles, name="verified")
@@ -79,7 +83,8 @@ async def on_guild_join(guild):
             for member in guild.members:
                 if member != guild.owner:
                     await member.add_roles(unverified, reason=None, atomic=True)
-            await channel.send("To verify yourself, use \"$verify <FirstName LastName>\"")
+            await channel.send('To verify yourself, use "$verify <FirstName LastName>"')
+
 
 # ------------------------------------------------------------------------------------------------------------------
 #    Function: on_ready()
@@ -102,18 +107,15 @@ async def on_ready():
     # members = "\n -".join([member.name for member in guild.members])
     # print(f"Guild Members:\n - {members}")
     # db.connect()
-    
+
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
             bot.load_extension(f"cogs.{filename[:-3]}")
     bot.load_extension("jishaku")
 
-    await bot.change_presence(
-        activity=discord.Activity(
-            type=discord.ActivityType.watching, name="Over This Server"
-        )
-    )
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="Over This Server"))
     print("READY!")
+
 
 ###########################
 # Function: on_message
@@ -123,7 +125,7 @@ async def on_ready():
 ###########################
 @bot.event
 async def on_message(message):
-    ''' run on message sent to a channel '''
+    """run on message sent to a channel"""
     # allow messages from test bot
     if message.author.bot and message.author.id == 889697640411955251:
         ctx = await bot.get_context(message)
@@ -133,12 +135,10 @@ async def on_message(message):
         return
 
     if profanity.contains_profanity(message.content):
-        await message.channel.send(message.author.name + ' says: ' +
-            profanity.censor(message.content))
+        await message.channel.send(message.author.name + " says: " + profanity.censor(message.content))
         await message.delete()
 
     await bot.process_commands(message)
-
 
 
 ###########################
@@ -150,11 +150,11 @@ async def on_message(message):
 ###########################
 @bot.event
 async def on_message_edit(before, after):
-    ''' run on message edited '''
+    """run on message edited"""
     if profanity.contains_profanity(after.content):
-        await after.channel.send(after.author.name + ' says: ' +
-            profanity.censor(after.content))
+        await after.channel.send(after.author.name + " says: " + profanity.censor(after.content))
         await after.delete()
+
 
 # ------------------------------------------------------------------------------------------
 #    Function: on_member_join(member)
@@ -167,14 +167,13 @@ async def on_message_edit(before, after):
 @bot.event
 async def on_member_join(member):
 
-    unverified = discord.utils.get(
-        member.guild.roles, name="unverified"
-    )  # finds the unverified role in the guild
-    await member.add_roles(unverified) # assigns the unverified role to the new member 
+    unverified = discord.utils.get(member.guild.roles, name="unverified")  # finds the unverified role in the guild
+    await member.add_roles(unverified)  # assigns the unverified role to the new member
     await member.send("Hello " + member.name + "!")
     await member.send(
         "Verify yourself before getting started! \n To use the verify command, do: $verify <your_full_name> \n \
-        ( For example: $verify Jane Doe )")
+        ( For example: $verify Jane Doe )"
+    )
 
 
 # ------------------------------------------------
@@ -207,7 +206,7 @@ async def on_error(event, *args, **kwargs):
 @bot.command(name="shutdown", help="Shuts down the bot, only usable by the owner")
 @has_permissions(administrator=True)
 async def shutdown(ctx):
-    await ctx.send('Shutting Down bot')
+    await ctx.send("Shutting Down bot")
     print("Bot closed successfully")
     ctx.bot.logout()
     exit()
@@ -215,4 +214,3 @@ async def shutdown(ctx):
 
 # Starts the bot with the current token
 bot.run(TOKEN)
-
