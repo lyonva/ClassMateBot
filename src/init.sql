@@ -20,6 +20,7 @@ CREATE TABLE project_groups (
 
 CREATE TABLE name_mapping (
     guild_id        BIGINT NOT NULL,
+    author_id       BIGINT NOT NULL,
     username        VARCHAR NOT NULL,
     real_name       VARCHAR NOT NULL
 );

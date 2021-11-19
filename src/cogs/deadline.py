@@ -14,6 +14,15 @@ from discord.ext import commands
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
 
+def is_dm():
+    def predicate(ctx):
+        return ctx.guild is None
+    return commands.check(predicate)
+
+def is_sm():
+    def predicate(ctx):
+        return ctx.guild is not None
+    return commands.check(predicate)
 
 class Deadline(commands.Cog):
 
@@ -221,12 +230,20 @@ class Deadline(commands.Cog):
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="duetoday", pass_context=True, help="check all the homeworks that are due today $duetoday")
     async def duetoday(self, ctx):
-        due_today = db.query(
-            "SELECT course, homework, due_date::time AS due_time "
-            "FROM reminders "
-            "WHERE guild_id = %s AND due_date::date = now()::date",
-            (ctx.guild.id,)
-        )
+        if ctx.guild is None:
+            due_today = db.query(
+                "SELECT course, homework, due_date::time AS due_time "
+                "FROM reminders "
+                "WHERE guild_id = %s AND due_date::date = now()::date",
+                (ctx.guild.id,)
+            )
+        else:
+            due_today = db.query(
+                "SELECT course, homework, due_date::time AS due_time "
+                "FROM reminders "
+                "WHERE guild_id = %s AND due_date::date = now()::date",
+                (ctx.guild.id,)
+            )
         for course, homework, due_time in due_today:
             await ctx.send(f"{course} {homework} is due today at {due_time} UTC")
         if len(due_today) == 0:

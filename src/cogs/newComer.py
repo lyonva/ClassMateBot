@@ -55,8 +55,8 @@ class NewComer(commands.Cog):
                     "To use the verify command, do: $verify <FirstName LastName> \n ( For example: $verify Jane Doe )"
                 )
             else:
-                db.query('INSERT INTO name_mapping (guild_id, username, real_name) VALUES (%s, %s, %s)',
-                         (ctx.guild.id, member.name, name))
+                db.query('INSERT INTO name_mapping (guild_id, author_id, username, real_name) VALUES (%s, %s, %s, %s)',
+                         (ctx.guild.id, ctx.message.author.id, member.name, name))
                 await member.add_roles(verified)  # adding verified role
                 await member.remove_roles(unverified)  # removed unverified role
                 await ctx.send(f"Thank you for verifying! You can start using {ctx.guild.name}!")
