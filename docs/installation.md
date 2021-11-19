@@ -16,7 +16,7 @@ To set up and run the ClassMate Bot:
    3. Create a Discord bot in the [Developer Portal](https://discord.com/developers/applications) by [following instructions here](https://realpython.com/how-to-make-a-discord-bot-python/). Copy the bot's token into the `.env` file:
       ```
       # .env
-      DISCORD_TOKEN={your-bot-token}
+      TOKEN={your-bot-token}
       ```
 6. Set up the database. ClassMate Bot currently uses [Heroku](https://www.heroku.com/) as a cloud platform for running the bot, and uses a PostgreSQL database hooked up to the Heroku application that runs the bot.
    1. [Create a Heroku account](https://signup.heroku.com/login).
@@ -25,7 +25,7 @@ To set up and run the ClassMate Bot:
    4. Acquire the PostgreSQL database connection URL (In the web UI inside the Heroku app, navigate to `Resources > Heroku Postgres > Settings > View Credentials...` and note the URI). Copy this URI into the `.env` file; your `.env` file should now look like this:
       ```
       # .env
-      DISCORD_TOKEN={your-bot-token}
+      TOKEN={your-bot-token}
       DATABASE_URL={your-database-url}
       ```
 7. Start the bot. From the project root directory, run `python3 src/bot` (or `python src/bot.py` on Windows)
@@ -46,8 +46,9 @@ Setup:
    1. [Install the heroku command line tool](https://devcenter.heroku.com/articles/heroku-cli)
    2. Authenticate to the Heroku CLI: `heroku login`
    3. Connect the Heroku CLI to your Heroku app: from your project's root directory run `heroku git:remote -a <name-of-your-app>`
+     * NOTE: If heroku cannot find your psql installation, check that the PostgreSQL directory is in your root. If it is, try restarting. 
 
-You should now be able to connect to the Heroku PostgreSQL database through the `psql` client by running `heroku pg:psql` (if this step fails you may have not installed PostgreSQL correctly. Documentation for `psql` can be found [here](https://www.postgresql.org/docs/13/app-psql.html)
+You should now be able to connect to the Heroku PostgreSQL database through the `psql` client by running `heroku pg:psql -a <name-of-your-app>` (if this step fails you may have not installed PostgreSQL correctly. Documentation for `psql` can be found [here](https://www.postgresql.org/docs/13/app-psql.html)
 
 ## Running Tests
 This bot is tested using pytest and [dpytest](https://dpytest.readthedocs.io/en/latest/index.html). To run tests on the ClassMate Bot, run `pytest` in the root directory.
