@@ -6,7 +6,6 @@ import db
 
 
 class Qanda(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
 
@@ -20,39 +19,42 @@ class Qanda(commands.Cog):
     #    Outputs:
     #       - User question in new post
     # -----------------------------------------------------------------------------------------------------------------
-    @commands.command(name='ask', help='Ask question. Please put question text in quotes. Add *anonymous* if desired.'
-                                       'EX: $ask /"When is the exam?/" anonymous')
-    async def askQuestion(self, ctx, qs: str, anonymous=''):
+    @commands.command(
+        name="ask",
+        help="Ask question. Please put question text in quotes. Add *anonymous* if desired."
+        'EX: $ask /"When is the exam?/" anonymous',
+    )
+    async def askQuestion(self, ctx, qs: str, anonymous=""):
 
         # make sure to check that this is actually being asked in the Q&A channel
-        if not ctx.channel.name == 'q-and-a':
-            await ctx.author.send('Please send questions to the #q-and-a channel.')
+        if not ctx.channel.name == "q-and-a":
+            await ctx.author.send("Please send questions to the #q-and-a channel.")
             await ctx.message.delete()
             return
 
         # get author
-        if anonymous == '':
+        if anonymous == "":
             author = ctx.message.author.id
-        elif anonymous == 'anonymous':
+        elif anonymous == "anonymous":
             author = None
         else:
-            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+            await ctx.author.send("Unknown input for *anonymous* option. Please type **anonymous** or leave blank.")
             await ctx.message.delete()
             return
 
         # get number of questions + 1
-        num = db.query('SELECT COUNT(*) FROM questions WHERE guild_id = %s', (ctx.guild.id,))[0][0] + 1
+        num = db.query("SELECT COUNT(*) FROM questions WHERE guild_id = %s", (ctx.guild.id,))[0][0] + 1
 
         # format question
-        author_str = 'anonymous' if author is None else (await self.bot.fetch_user(author)).name
+        author_str = "anonymous" if author is None else (await self.bot.fetch_user(author)).name
         q_str = f"Q{num}: {qs} by {author_str}"
 
         message = await ctx.send(q_str)
 
         # add to db
         db.query(
-            'INSERT INTO questions (guild_id, number, question, author_id, msg_id) VALUES (%s, %s, %s, %s, %s)',
-            (ctx.guild.id, num, qs, author, message.id)
+            "INSERT INTO questions (guild_id, number, question, author_id, msg_id) VALUES (%s, %s, %s, %s, %s)",
+            (ctx.guild.id, num, qs, author, message.id),
         )
 
         # delete original question
@@ -71,8 +73,9 @@ class Qanda(commands.Cog):
     async def ask_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
-                'To use the ask command, do: $ask \"QUESTION\" anonymous*<optional>* \n '
-                '(For example: $ask \"What class is this?\" anonymous)')
+                'To use the ask command, do: $ask "QUESTION" anonymous*<optional>* \n '
+                '(For example: $ask "What class is this?" anonymous)'
+            )
         else:
             await ctx.author.send(error)
         await ctx.message.delete()
@@ -88,32 +91,36 @@ class Qanda(commands.Cog):
     # Outputs:
     #      - User answer added to question post
     # -----------------------------------------------------------------------------------------------------------------
-    @commands.command(name='answer',
-                      help='Answer question. Please put answer text in quotes. Add *anonymous* if desired.'
-                           'EX: $answer 1 /"Oct 12/" anonymous')
-    async def answer(self, ctx, num, ans, anonymous=''):
-        ''' answer the specific question '''
+    @commands.command(
+        name="answer",
+        help="Answer question. Please put answer text in quotes. Add *anonymous* if desired."
+        'EX: $answer 1 /"Oct 12/" anonymous',
+    )
+    async def answer(self, ctx, num, ans, anonymous=""):
+        """answer the specific question"""
         # make sure to check that this is actually being asked in the Q&A channel
-        if not ctx.channel.name == 'q-and-a':
-            await ctx.author.send('Please send answers to the #q-and-a channel.')
+        if not ctx.channel.name == "q-and-a":
+            await ctx.author.send("Please send answers to the #q-and-a channel.")
             await ctx.message.delete()
             return
 
         # get author
-        if anonymous == '':
+        if anonymous == "":
             author = ctx.message.author.id
-        elif anonymous == 'anonymous':
+        elif anonymous == "anonymous":
             author = None
         else:
-            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+            await ctx.author.send("Unknown input for *anonymous* option. Please type **anonymous** or leave blank.")
             await ctx.message.delete()
             return
 
         # check if question number exists
-        q = db.query('SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s AND number = %s',
-                     (ctx.guild.id, num))
+        q = db.query(
+            "SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s AND number = %s",
+            (ctx.guild.id, num),
+        )
         if len(q) == 0:
-            await ctx.author.send('Invalid question number: ' + str(num))
+            await ctx.author.send("Invalid question number: " + str(num))
             # delete user msg
             await ctx.message.delete()
             return
@@ -123,40 +130,66 @@ class Qanda(commands.Cog):
         try:
             message = await ctx.fetch_message(q[3])
         except NotFound:
-            await ctx.author.send('Invalid question number: ' + str(num))
+            await ctx.author.send("Invalid question number: " + str(num))
             # delete user msg
             await ctx.message.delete()
             return
 
         # add answer to db
         if "instructor" in [y.name.lower() for y in ctx.author.roles]:
-            role = 'Instructor'
+            role = "Instructor"
         else:
-            role = 'Student'
+            role = "Student"
         db.query(
-            'INSERT INTO answers (guild_id, q_number, answer, author_id, author_role) VALUES (%s, %s, %s, %s, %s)',
-            (ctx.guild.id, num, ans, author, role)
+            "INSERT INTO answers (guild_id, q_number, answer, author_id, author_role) VALUES (%s, %s, %s, %s, %s)",
+            (ctx.guild.id, num, ans, author, role),
         )
 
         # generate and edit msg with answer
-        q_author_str = 'anonymous' if q[2] is None else (await self.bot.fetch_user(q[2])).name
+        q_author_str = "anonymous" if q[2] is None else (await self.bot.fetch_user(q[2])).name
         new_answer = f"Q{q[0]}: {q[1]} by {q_author_str}\n"
 
         # get all answers for question and add to msg
-        answers = db.query('SELECT answer, author_id, author_role FROM answers WHERE guild_id = %s AND q_number = %s',
-                           (ctx.guild.id, num))
+        answers = db.query(
+            "SELECT answer, author_id, author_role FROM answers WHERE guild_id = %s AND q_number = %s",
+            (ctx.guild.id, num),
+        )
         for answer, author, role in answers:
-            a_author = 'anonymous' if author is None else (await self.bot.fetch_user(author)).name
+            a_author = "anonymous" if author is None else (await self.bot.fetch_user(author)).name
             new_answer += f"{a_author} ({role}) Ans: {answer}\n"
 
         # edit message
         try:
             await message.edit(content=new_answer)
         except NotFound:
-            await ctx.author.send('Invalid question number: ' + str(num))
+            await ctx.author.send("Invalid question number: " + str(num))
 
         # delete user msg
         await ctx.message.delete()
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # Function: getQAs
+    # Description: returns all questions and answers
+    # Inputs:
+    #      - ctx: context of the command
+    #      - num: question number being answered
+    #      - ans: answer text to question specified in num
+    #      - anonymous: option if user wants their question to be shown anonymously
+    # Outputs:
+    #      - User answer added to question post
+    # -----------------------------------------------------------------------------------------------------------------
+    @commands.command(name="getQAs", help="Sends DM of all questions and answers" "EX: $getQAs")
+    async def answer(self, ctx, num, ans, anonymous=""):
+        if ctx.guild == None:
+            questions = db.query(
+                "SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s",
+                (ctx.guild.id),
+            )
+            answers = db.query(
+                "SELECT answer, author_id, author_role FROM answers WHERE guild_id = %s AND q_number = %s",
+                (ctx.guild.id, num),
+            )
+        return
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: answer_error(self, ctx, error)
@@ -171,8 +204,9 @@ class Qanda(commands.Cog):
     async def answer_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
-                'To use the answer command, do: $answer QUESTION_NUMBER \"ANSWER\" anonymous*<optional>*\n '
-                '(For example: $answer 2 \"Yes\")')
+                'To use the answer command, do: $answer QUESTION_NUMBER "ANSWER" anonymous*<optional>*\n '
+                '(For example: $answer 2 "Yes")'
+            )
         else:
             await ctx.author.send(error)
         await ctx.message.delete()
