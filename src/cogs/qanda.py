@@ -179,17 +179,31 @@ class Qanda(commands.Cog):
     #      - User answer added to question post
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="getQAs", help="Sends DM of all questions and answers" "EX: $getQAs")
-    async def answer(self, ctx, num, ans, anonymous=""):
+    async def getQAs(self, ctx):
+        result = ""
         if ctx.guild == None:
-            questions = db.query(
-                "SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s",
-                (ctx.guild.id),
+            guilds = db.query(
+                "SELECT guild_id FROM name_mapping WHERE author_id = %s",
+                (ctx.message.author.id,),
             )
-            answers = db.query(
-                "SELECT answer, author_id, author_role FROM answers WHERE guild_id = %s AND q_number = %s",
-                (ctx.guild.id, num),
-            )
-        return
+            for guild in guilds:
+                guild_id = guild
+                questions = db.query(
+                    "SELECT number, question FROM questions WHERE guild_id = %s",
+                    (guild_id,),
+                )
+                for q_num, question in questions:
+                    num = q_num
+                    question_string = question
+                    result += f"Q{num}: {question_string}\n"
+                    answers = db.query(
+                        "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
+                        (guild_id, num),
+                    )
+                    for answer in answers:
+                        answer_string = answer[0]
+                        result += f"Answer: {answer_string}\n\n"
+        await ctx.author.send(result)
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: answer_error(self, ctx, error)
