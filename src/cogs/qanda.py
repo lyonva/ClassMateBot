@@ -3,6 +3,7 @@
 from discord import NotFound
 from discord.ext import commands
 import db
+from utils import *
 
 
 class Qanda(commands.Cog):
@@ -202,36 +203,32 @@ class Qanda(commands.Cog):
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="getQAs", help="Sends DM of all questions and answers" "EX: $getQAs")
     async def getQAs(self, ctx):
+        results = await chooseGuild(self, ctx)
+        guild_list = results[0]
+        msg = results[1]
         result = ""
-        if ctx.guild == None:
-            guilds = db.query(
-                "SELECT guild_id FROM name_mapping WHERE author_id = %s",
-                (ctx.message.author.id,),
-            )
-            for guild in guilds:
-                guild_id = guild
-                questions = db.query(
-                    "SELECT number, question FROM questions WHERE guild_id = %s",
-                    (guild_id,),
+        questions = db.query(
+            "SELECT number, question FROM questions WHERE guild_id = %s",
+            (guild_list[msg - 1],),
+        )
+        if questions == []:
+            result = "No questions have been asked"
+        else:
+            for q_num, question in questions:
+                num = q_num
+                question_string = question
+                result += f"Q{num}: {question_string}\n"
+                answers = db.query(
+                    "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
+                    (guild_list[msg - 1], num),
                 )
-                if questions == []:
-                    result = "No questions have been asked"
+                if answers == []:
+                    answer_string = "No answer"
+                    result += f"Answer: {answer_string}\n\n"
                 else:
-                    for q_num, question in questions:
-                        num = q_num
-                        question_string = question
-                        result += f"Q{num}: {question_string}\n"
-                        answers = db.query(
-                            "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
-                            (guild_id, num),
-                        )
-                        if answers == []:
-                            answer_string = "No answer"
-                            result += f"Answer: {answer_string}\n\n"
-                        else:
-                            for answer in answers:
-                                answer_string = answer[0]
-                                result += f"Answer: {answer_string}\n\n"
+                    for answer in answers:
+                        answer_string = answer[0]
+                        result += f"Answer: {answer_string}\n\n"
         await ctx.author.send(result)
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -244,37 +241,35 @@ class Qanda(commands.Cog):
     #      - Question and appropriate answer (if one exists)
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="getq", help="Sends DM of all questions and answers" "EX: $getq 1")
-    async def getQuestion(self, ctx, num):
+    async def getQuestion(self, ctx):
+        results = await chooseGuild(self, ctx)
+        print(results)
+        guild_list = results[0]
+        msg = results[1]
         result = ""
-        if ctx.guild == None:
-            guilds = db.query(
-                "SELECT guild_id FROM name_mapping WHERE author_id = %s",
-                (ctx.message.author.id,),
-            )
-            for guild in guilds:
-                guild_id = guild
-                questions = db.query(
-                    "SELECT number, question FROM questions WHERE guild_id = %s and number = %s",
-                    (guild_id, num),
+        num = chooseNumber(self, ctx)
+        questions = db.query(
+            "SELECT number, question FROM questions WHERE guild_id = %s and number = %s",
+            (guild_list[msg - 1], num),
+        )
+        if questions == []:
+            result = "This question doesn't exist"
+        else:
+            for q_num, question in questions:
+                num = q_num
+                question_string = question
+                result += f"Q{num}: {question_string}\n"
+                answers = db.query(
+                    "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
+                    (guild_list[msg - 1], num),
                 )
-                if questions == []:
-                    result = "This question doesn't exist"
+                if answers == []:
+                    answer_string = "No answer"
+                    result += f"Answer: {answer_string}\n\n"
                 else:
-                    for q_num, question in questions:
-                        num = q_num
-                        question_string = question
-                        result += f"Q{num}: {question_string}\n"
-                        answers = db.query(
-                            "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
-                            (guild_id, num),
-                        )
-                        if answers == []:
-                            answer_string = "No answer"
-                            result += f"Answer: {answer_string}\n\n"
-                        else:
-                            for answer in answers:
-                                answer_string = answer[0]
-                                result += f"Answer: {answer_string}\n\n"
+                    for answer in answers:
+                        answer_string = answer[0]
+                        result += f"Answer: {answer_string}\n\n"
         await ctx.author.send(result)
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -321,6 +316,61 @@ class Qanda(commands.Cog):
                             (guild_id, num),
                         )
                 await ctx.send(f"Question {num} has been deleted\n")
+
+
+async def chooseGuild(self, ctx):
+    msg = ""
+    guild_list = []
+    if ctx.guild == None:
+
+        def check(m):
+            return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
+
+        guilds = get_all_ids_by_user(ctx)
+        valid_answer = False
+        while valid_answer == False:
+            msg = ""
+            guild_list_string = "Choose a server (enter the number): \n"
+            current = 1
+            guild_list = []
+            if guilds == []:
+                await ctx.author.send("You are not in any servers")
+            else:
+                for guild in guilds:
+                    guild_list.append(guild)
+                    guild_list_string += f"{current}. {get_guild_name_by_id( ctx, guild )}\n"
+                    current += 1
+                await ctx.author.send(guild_list_string)
+                msg = await self.bot.wait_for("message", check=check)
+                try:
+                    msg = int(msg.content)
+                    valid_answer = True
+                except Exception as e:
+                    print(e)
+                    await ctx.author.send("You have entered an invalid option\n")
+    return [guild_list, msg]
+
+
+async def chooseNumber(self, ctx):
+    msg = ""
+
+    def check(m):
+        return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
+
+    valid_answer = False
+    while valid_answer == False:
+        msg = ""
+        guild_list_string = "Please enter a number: \n"
+        msg = await self.bot.wait_for("message", check=check)
+        try:
+            msg = int(msg.content)
+            valid_answer = True
+        except Exception as e:
+            print(e)
+            await ctx.author.send(
+                "You have entered an invalid option\n" + "Please make sure you are entering an integer"
+            )
+    return msg
 
 
 def setup(bot):
