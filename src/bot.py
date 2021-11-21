@@ -48,6 +48,9 @@ async def on_guild_join(guild):
             if 'q-and-a' not in guild.text_channels:
                 await guild.create_text_channel('q-and-a')
                 await channel.send("q-and-a channel has been added!")
+            if 'verification' not in guild.text_channels:
+                await guild.create_text_channel('verification')
+                await channel.send("verification channel has been added!")
 
             if discord.utils.get(guild.roles, name="verified") is None:
                 await guild.create_role(name="verified", colour=discord.Colour(0x2ecc71),
@@ -66,10 +69,10 @@ async def on_guild_join(guild):
                                         permissions=discord.Permissions.all())
             # Assign Verified role to Guild owner
             leader = guild.owner
-            leadrole = get(guild.roles, name="verified")
+            # leadrole = get(guild.roles, name="verified")
             unverified = discord.utils.get(guild.roles, name="unverified")
-            await leader.add_roles(leadrole, reason=None, atomic=True)
-            await channel.send(leader.name + " has been given verified role!")
+            # await leader.add_roles(leadrole, reason=None, atomic=True)
+            # await channel.send(leader.name + " has been given verified role!")
             # Assign Instructor role to Guild owner
             leadrole = get(guild.roles, name="Instructor")
             await leader.add_roles(leadrole, reason=None, atomic=True)
@@ -77,9 +80,8 @@ async def on_guild_join(guild):
             # Assign unverified role to all other members
             await leader.add_roles(leadrole, reason=None, atomic=True)
             for member in guild.members:
-                if member != guild.owner:
-                    await member.add_roles(unverified, reason=None, atomic=True)
-            await channel.send("To verify yourself, use \"$verify <FirstName LastName>\"")
+                await member.add_roles(unverified, reason=None, atomic=True)
+            await channel.send("To verify yourself, send \"$verify <FirstName LastName>\" in the verification channel!")
 
 # ------------------------------------------------------------------------------------------------------------------
 #    Function: on_ready()
