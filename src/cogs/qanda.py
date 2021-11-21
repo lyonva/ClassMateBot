@@ -43,7 +43,12 @@ class Qanda(commands.Cog):
             return
 
         # get number of questions + 1
-        num = db.query("SELECT COUNT(*) FROM questions WHERE guild_id = %s", (ctx.guild.id,))[0][0] + 1
+        num = 0
+        questions = db.query("SELECT * FROM questions WHERE guild_id = %s", (ctx.guild.id,))
+        if questions == []:
+            num = 1
+        else:
+            num = db.query("SELECT MAX(number) FROM questions WHERE guild_id = %s", (ctx.guild.id,))[0][0] + 1
 
         # format question
         author_str = "anonymous" if author is None else (await self.bot.fetch_user(author)).name
@@ -168,44 +173,6 @@ class Qanda(commands.Cog):
         await ctx.message.delete()
 
     # -----------------------------------------------------------------------------------------------------------------
-    # Function: getQAs
-    # Description: returns all questions and answers
-    # Inputs:
-    #      - ctx: context of the command
-    #      - num: question number being answered
-    #      - ans: answer text to question specified in num
-    #      - anonymous: option if user wants their question to be shown anonymously
-    # Outputs:
-    #      - User answer added to question post
-    # -----------------------------------------------------------------------------------------------------------------
-    @commands.command(name="getQAs", help="Sends DM of all questions and answers" "EX: $getQAs")
-    async def getQAs(self, ctx):
-        result = ""
-        if ctx.guild == None:
-            guilds = db.query(
-                "SELECT guild_id FROM name_mapping WHERE author_id = %s",
-                (ctx.message.author.id,),
-            )
-            for guild in guilds:
-                guild_id = guild
-                questions = db.query(
-                    "SELECT number, question FROM questions WHERE guild_id = %s",
-                    (guild_id,),
-                )
-                for q_num, question in questions:
-                    num = q_num
-                    question_string = question
-                    result += f"Q{num}: {question_string}\n"
-                    answers = db.query(
-                        "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
-                        (guild_id, num),
-                    )
-                    for answer in answers:
-                        answer_string = answer[0]
-                        result += f"Answer: {answer_string}\n\n"
-        await ctx.author.send(result)
-
-    # -----------------------------------------------------------------------------------------------------------------
     #    Function: answer_error(self, ctx, error)
     #    Description: prints error message for answer command
     #    Inputs:
@@ -224,6 +191,136 @@ class Qanda(commands.Cog):
         else:
             await ctx.author.send(error)
         await ctx.message.delete()
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # Function: getQAs
+    # Description: returns all questions and answers
+    # Inputs:
+    #      - ctx: context of the command
+    # Outputs:
+    #      - User answer added to question post
+    # -----------------------------------------------------------------------------------------------------------------
+    @commands.command(name="getQAs", help="Sends DM of all questions and answers" "EX: $getQAs")
+    async def getQAs(self, ctx):
+        result = ""
+        if ctx.guild == None:
+            guilds = db.query(
+                "SELECT guild_id FROM name_mapping WHERE author_id = %s",
+                (ctx.message.author.id,),
+            )
+            for guild in guilds:
+                guild_id = guild
+                questions = db.query(
+                    "SELECT number, question FROM questions WHERE guild_id = %s",
+                    (guild_id,),
+                )
+                if questions == []:
+                    result = "No questions have been asked"
+                else:
+                    for q_num, question in questions:
+                        num = q_num
+                        question_string = question
+                        result += f"Q{num}: {question_string}\n"
+                        answers = db.query(
+                            "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
+                            (guild_id, num),
+                        )
+                        if answers == []:
+                            answer_string = "No answer"
+                            result += f"Answer: {answer_string}\n\n"
+                        else:
+                            for answer in answers:
+                                answer_string = answer[0]
+                                result += f"Answer: {answer_string}\n\n"
+        await ctx.author.send(result)
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # Function: getq
+    # Description: returns the requested question and answer
+    # Inputs:
+    #      - ctx: context of the command
+    #      - num: question number to get
+    # Outputs:
+    #      - Question and appropriate answer (if one exists)
+    # -----------------------------------------------------------------------------------------------------------------
+    @commands.command(name="getq", help="Sends DM of all questions and answers" "EX: $getq 1")
+    async def getQuestion(self, ctx, num):
+        result = ""
+        if ctx.guild == None:
+            guilds = db.query(
+                "SELECT guild_id FROM name_mapping WHERE author_id = %s",
+                (ctx.message.author.id,),
+            )
+            for guild in guilds:
+                guild_id = guild
+                questions = db.query(
+                    "SELECT number, question FROM questions WHERE guild_id = %s and number = %s",
+                    (guild_id, num),
+                )
+                if questions == []:
+                    result = "This question doesn't exist"
+                else:
+                    for q_num, question in questions:
+                        num = q_num
+                        question_string = question
+                        result += f"Q{num}: {question_string}\n"
+                        answers = db.query(
+                            "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
+                            (guild_id, num),
+                        )
+                        if answers == []:
+                            answer_string = "No answer"
+                            result += f"Answer: {answer_string}\n\n"
+                        else:
+                            for answer in answers:
+                                answer_string = answer[0]
+                                result += f"Answer: {answer_string}\n\n"
+        await ctx.author.send(result)
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # Function: deleteq
+    # Description: deletes a specific question/answer (if it exists) if you are an instructor
+    # Inputs:
+    #      - ctx: context of the command
+    #      - num: question number to delete
+    # Outputs:
+    #      - Confirmation/denial that question/answer was deleted
+    # -----------------------------------------------------------------------------------------------------------------
+    @commands.command(name="deleteq", help="Deletes a requested question if you are an instructor" "EX: $deleteq 1")
+    @commands.has_role("Instructor")
+    async def deleteQuestion(self, ctx, num):
+        await ctx.message.delete()
+        guild_id = ctx.guild.id
+        questions = db.query(
+            "SELECT number, question FROM questions WHERE guild_id = %s and number = %s",
+            (guild_id, num),
+        )
+        if questions == []:
+            await ctx.send(f"Question {num} does not exist")
+        else:
+            for q_num, question in questions:
+                num = q_num
+                question_string = question
+                answers = db.query(
+                    "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
+                    (guild_id, num),
+                )
+                if answers == []:
+                    db.query(
+                        "DELETE FROM questions WHERE guild_id = %s and number = %s",
+                        (guild_id, num),
+                    )
+                else:
+                    db.query(
+                        "DELETE FROM questions WHERE guild_id = %s and number = %s",
+                        (guild_id, num),
+                    )
+                    for answer in answers:
+                        db.query(
+                            "DELETE FROM answers WHERE guild_id = %s and q_number = %s",
+                            (guild_id, num),
+                        )
+                await ctx.send(f"Question {num} has been deleted\n")
 
 
 def setup(bot):
