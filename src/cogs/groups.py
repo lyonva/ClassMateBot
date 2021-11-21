@@ -278,7 +278,14 @@ class Groups(commands.Cog):
         await ctx.send(embed=embed)
 
         
-#-------------------------------------
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: autogroup(self, ctx)
+    #    Description: autogroups all the members into groups
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: Places all the members into a group
+    # -------------------------------------------------------------------------------------------------------
 
     @commands.command(name='autogroup', help='autogroups members', pass_context=True)
 
