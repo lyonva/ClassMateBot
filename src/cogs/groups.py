@@ -287,12 +287,14 @@ class Groups(commands.Cog):
             'SELECT real_name FROM name_mapping WHERE guild_id = %s',
             (ctx.guild.id,)
         )
+        temp = list_member[0]
+        list_member = list(temp)
 
         #list_member = ['ASHWITH SHETTYq1', 'u1', 'AS SHETTY', 'ASHWITH SHETTY', 'adads', 'fdv', 'fgkhds']
-        members_per_group= 3
+        members_per_group= 6
         #total_members= len(list_member)
         #total_groups= math.ceil(total_members / members_per_group)
-        groups1 = db.query(
+        group1 = db.query(
             'SELECT group_num, array_agg(member_name) '
             'FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
             (ctx.guild.id,)
