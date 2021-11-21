@@ -243,14 +243,13 @@ class Qanda(commands.Cog):
     @commands.command(name="getq", help="Sends DM of all questions and answers" "EX: $getq 1")
     async def getQuestion(self, ctx):
         results = await chooseGuild(self, ctx)
-        print(results)
-        guild_list = results[0]
         msg = results[1]
+        guild_list = str(results[0][msg - 1])
         result = ""
-        num = chooseNumber(self, ctx)
+        num = str(await chooseNumber(self, ctx))
         questions = db.query(
             "SELECT number, question FROM questions WHERE guild_id = %s and number = %s",
-            (guild_list[msg - 1], num),
+            (guild_list, num),
         )
         if questions == []:
             result = "This question doesn't exist"
@@ -281,21 +280,21 @@ class Qanda(commands.Cog):
     # Outputs:
     #      - Confirmation/denial that question/answer was deleted
     # -----------------------------------------------------------------------------------------------------------------
-    @commands.command(name="deleteq", help="Deletes a requested question if you are an instructor" "EX: $deleteq 1")
+    @commands.command(name="deleteq", help="Deletes a requested question if you are an instructor" "EX: $deleteq")
     @commands.has_role("Instructor")
-    async def deleteQuestion(self, ctx, num):
+    async def deleteQuestion(self, ctx):
         await ctx.message.delete()
         guild_id = ctx.guild.id
+        num = str(await chooseNumber(self, ctx))
         questions = db.query(
-            "SELECT number, question FROM questions WHERE guild_id = %s and number = %s",
+            "SELECT number FROM questions WHERE guild_id = %s and number = %s",
             (guild_id, num),
         )
         if questions == []:
             await ctx.send(f"Question {num} does not exist")
         else:
-            for q_num, question in questions:
-                num = q_num
-                question_string = question
+            for q_num in questions:
+                num = str(q_num[0])
                 answers = db.query(
                     "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
                     (guild_id, num),
@@ -310,67 +309,106 @@ class Qanda(commands.Cog):
                         "DELETE FROM questions WHERE guild_id = %s and number = %s",
                         (guild_id, num),
                     )
-                    for answer in answers:
-                        db.query(
-                            "DELETE FROM answers WHERE guild_id = %s and q_number = %s",
-                            (guild_id, num),
-                        )
+                    db.query(
+                        "DELETE FROM answers WHERE guild_id = %s and q_number = %s",
+                        (guild_id, num),
+                    )
                 await ctx.send(f"Question {num} has been deleted\n")
 
+    # -----------------------------------------------------------------------------------------------------------------
+    # Function: chooseGuild
+    # Description: finds all servers user is a part of through a DM message with the bot
+    # Inputs:
+    #      - ctx: context of the command
+    # Outputs:
+    #      - guild_list: List of all guild id's the user is associated with
+    #      - msg: int representation of the number the user entered
+    # -----------------------------------------------------------------------------------------------------------------
+    async def chooseGuild(self, ctx):
+        msg = ""
+        guild_list = []
+        if ctx.guild == None:
 
-async def chooseGuild(self, ctx):
-    msg = ""
-    guild_list = []
-    if ctx.guild == None:
+            def check(m):
+                return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
+
+            guilds = get_all_ids_by_user(ctx)
+            valid_answer = False
+            while valid_answer == False:
+                msg = ""
+                guild_list_string = "Choose a server (enter the number): \n"
+                current = 1
+                guild_list = []
+                if guilds == []:
+                    await ctx.author.send("You are not in any servers")
+                else:
+                    for guild in guilds:
+                        guild_list.append(guild)
+                        guild_list_string += f"{current}. {get_guild_name_by_id( ctx, guild )}\n"
+                        current += 1
+                    await ctx.author.send(guild_list_string)
+                    msg = await self.bot.wait_for("message", check=check)
+                    try:
+                        msg = int(msg.content)
+                        valid_answer = True
+                    except Exception as e:
+                        print(e)
+                        await ctx.author.send("You have entered an invalid option\n")
+        return [guild_list, msg]
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # Function: chooseNumber
+    # Description: asks for user input to enter a number which is used by various other functionalities
+    # Inputs:
+    #      - ctx: context of the command
+    # Outputs:
+    #      - msg_int: int representation of the number the user entered
+    # -----------------------------------------------------------------------------------------------------------------
+    async def chooseNumber(self, ctx):
+        msg = ""
+        msg_int = 0
 
         def check(m):
             return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
 
-        guilds = get_all_ids_by_user(ctx)
         valid_answer = False
+        msg_array = []
         while valid_answer == False:
             msg = ""
-            guild_list_string = "Choose a server (enter the number): \n"
-            current = 1
-            guild_list = []
-            if guilds == []:
-                await ctx.author.send("You are not in any servers")
+            if ctx.guild == None:
+                await ctx.author.send("Please enter a question number: \n")
             else:
-                for guild in guilds:
-                    guild_list.append(guild)
-                    guild_list_string += f"{current}. {get_guild_name_by_id( ctx, guild )}\n"
-                    current += 1
-                await ctx.author.send(guild_list_string)
-                msg = await self.bot.wait_for("message", check=check)
-                try:
-                    msg = int(msg.content)
-                    valid_answer = True
-                except Exception as e:
-                    print(e)
-                    await ctx.author.send("You have entered an invalid option\n")
-    return [guild_list, msg]
-
-
-async def chooseNumber(self, ctx):
-    msg = ""
-
-    def check(m):
-        return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
-
-    valid_answer = False
-    while valid_answer == False:
-        msg = ""
-        guild_list_string = "Please enter a number: \n"
-        msg = await self.bot.wait_for("message", check=check)
-        try:
-            msg = int(msg.content)
-            valid_answer = True
-        except Exception as e:
-            print(e)
-            await ctx.author.send(
-                "You have entered an invalid option\n" + "Please make sure you are entering an integer"
-            )
-    return msg
+                first = await ctx.send("Please enter a question number: \n")
+                msg_array.append(first.id)
+            msg = await self.bot.wait_for("message", check=check)
+            msg_array.append(msg.id)
+            try:
+                msg_int = int(msg.content)
+                valid_answer = True
+            except Exception as e:
+                print(e)
+                if ctx.guild == None:
+                    await ctx.author.send(
+                        "You have entered an invalid option\n" + "Please make sure you are entering an integer"
+                    )
+                else:
+                    second = await ctx.send(
+                        "You have entered an invalid option\n" + "Please make sure you are entering an integer"
+                    )
+                    array_count = 0
+                    for id in msg_array:
+                        to_delete = await ctx.fetch_message(str(id))
+                        await to_delete.delete()
+                        array_count += 1
+                    current_count = 0
+                    while current_count < array_count:
+                        msg_array.pop(0)
+                        current_count += 1
+                    msg_array.append(second.id)
+        for id in msg_array:
+            to_delete = await ctx.fetch_message(str(id))
+            await to_delete.delete()
+        return msg_int
 
 
 def setup(bot):
