@@ -277,6 +277,78 @@ class Groups(commands.Cog):
         # print the embedded objects
         await ctx.send(embed=embed)
 
+        
+#-------------------------------------
+
+    @commands.command(name='autogroup', help='autogroups members', pass_context=True)
+
+    async def autogroup(self, ctx):
+        list_member = db.query(
+            'SELECT real_name FROM name_mapping WHERE guild_id = %s',
+            (ctx.guild.id,)
+        )
+
+        #list_member = ['ASHWITH SHETTYq1', 'u1', 'AS SHETTY', 'ASHWITH SHETTY', 'adads', 'fdv', 'fgkhds']
+        members_per_group= 3
+        #total_members= len(list_member)
+        #total_groups= math.ceil(total_members / members_per_group)
+        groups1 = db.query(
+            'SELECT group_num, array_agg(member_name) '
+            'FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
+            (ctx.guild.id,)
+        )
+
+        existing_groups = []
+        #group1=[(2, ['ASHWITH SHETTY']), (3, ['u1', 'ASHWITH SHETTYq1']),(4, ['AS SHETTY'])]
+        new_group_number=0
+        for group_num, members in group1:            
+            if len(members) > 1:
+                new_group_number= new_group_number + 1
+                existing_groups.append(([new_group_number],members))
+                for x in members:
+                    if x in list_member:
+                        list_member.remove(x)
+                        db.query(
+                            'DELETE FROM group_members WHERE guild_id = %s AND member_name = %s',
+                            (ctx.guild.id, x)
+                        )
+                       
+            elif len(members)==1:
+                db.query(
+                    'DELETE FROM group_members WHERE guild_id = %s AND member_name = %s',
+                    (ctx.guild.id, members(0))
+                  )
+
+        # print (existing_groups)
+        # print(list_member1)
+        # print(groups)
+        
+
+        final_groups=[]
+        for group_num, members in existing_groups:            
+            while len(members) < members_per_group and len(list_member) > 0 :
+                members.append(list_member.pop(0))
+            final_groups.append(members)
+
+        while len(list_member) >0:
+            members=[]
+            while len(members) < members_per_group and len(list_member) > 0 :
+                members.append(list_member.pop(0))
+            final_groups.append(members)
+
+        final_group_number=1
+    
+        for x in final_groups:
+            for membername in x:
+                print (membername, final_group_number)
+                db.query(
+                    'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
+                    (ctx.guild.id, final_group_number, membername)
+                    )
+            final_group_number+=1
+
+
+
     # -----------------------------------------------------------
     # This is a testing arg, not really used for anything else but adding to the csv file
     # -----------------------------------------------------------
