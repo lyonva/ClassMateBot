@@ -259,15 +259,8 @@ class Deadline(commands.Cog):
             await send_manage_pages( ctx, pages )
             
         else:
-            reminders = db.query(
-                "SELECT course, homework, due_date "
-                "FROM reminders "
-                "WHERE guild_id = %s AND date_part('day', due_date - now()) <= 7",
-                (ctx.guild.id,)
-            )
-
-            for course, homework, due_date in reminders:
-                await ctx.send(f"{course} {homework} is due this week at {due_date}")
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
         # for reminder in self.reminders:
         #     timeleft = datetime.strptime(reminder["DUEDATE"], '%Y-%m-%d %H:%M:%S') - time
@@ -299,16 +292,8 @@ class Deadline(commands.Cog):
             pages = await reminders_to_pages( reminders, guild_ids, guild_names )
             await send_manage_pages( ctx, pages )
         else:
-            due_today = db.query(
-                "SELECT course, homework, due_date::time AS due_time "
-                "FROM reminders "
-                "WHERE guild_id = %s AND due_date::date = now()::date",
-                (ctx.guild.id,)
-            )
-            for course, homework, due_time in due_today:
-                await ctx.send(f"{course} {homework} is due today at {due_time} UTC")
-            if len(due_today) == 0:
-                await ctx.send("You have no dues today..!!")
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: coursedue(self, ctx, courseid: str)
@@ -334,14 +319,8 @@ class Deadline(commands.Cog):
             pages = await reminders_to_pages( reminders, guild_ids, guild_names )
             await send_manage_pages( ctx, pages )
         else:
-            reminders = db.query(
-                'SELECT homework, due_date FROM reminders WHERE guild_id = %s AND course = %s',
-                (ctx.guild.id, courseid)
-            )
-            for homework, due_date in reminders:
-                await ctx.send(f"{homework} is due at {due_date}")
-            if len(reminders) == 0:
-                await ctx.send(f"Rejoice..!! You have no pending homeworks for {courseid}..!!")
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
     @coursedue.error
     async def coursedue_error(self, ctx, error):
@@ -372,15 +351,8 @@ class Deadline(commands.Cog):
             pages = await reminders_to_pages( reminders, guild_ids, guild_names )
             await send_manage_pages( ctx, pages )
         else:
-            reminders = db.query(
-                'SELECT course, homework, due_date FROM reminders WHERE guild_id = %s and author_id = %s',
-                (ctx.guild.id, author.id)
-            )
-
-            for course, homework, due_date in reminders:
-                await ctx.send(f"{course} homework named: {homework} which is due on: {due_date} by {author.name}")
-            if not reminders:
-                await ctx.send("Mission Accomplished..!! You don't have any more dues..!!")
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
     # ---------------------------------------------------------------------------------
     #    Function: clearallreminders(self, ctx)
@@ -394,8 +366,12 @@ class Deadline(commands.Cog):
 
     @commands.command(name="clearreminders", pass_context=True, help="deletes all reminders")
     async def clearallreminders(self, ctx):
-        db.query('DELETE FROM reminders WHERE guild_id = %s', (ctx.guild.id,))
-        await ctx.send("All reminders have been cleared..!!")
+        if ctx.guild is None:
+            db.query('DELETE FROM reminders WHERE author_id = %s', (ctx.author.id,))
+            await ctx.send("All your reminders have been cleared.")
+        else:
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
     # ---------------------------------------------------------------------------------
     #    Function: remindme(self, ctx, quantity: int, time_unit : str,*, text :str)
