@@ -317,21 +317,20 @@ class Groups(commands.Cog):
             (ctx.guild.id)
         )
 
-        # creates the new groups
+        # Places all the members in their new groups
         group1=[]
         for group_num, members in group2:
             group1.append(members)
         
+        #group1=[['u1','u2', 'u3'], ['u4'], ['u6'], ['u5']]
+        #list_member = ['u1','u2', 'u3', 'u4', 'u5', 'u6']
         members_per_group= 6
-        group1=[['ASHWITH SHETTY'], ['u1', 'ASHWITH SHETTYq1'], ['AS SHETTY']]
-        list_member = ['ASHWITH SHETTYq1', 'u1', 'AS SHETTY', 'ASHWITH SHETTY', 'adads', 'fdv', 'fgkhds']
         check_size = 1
-        flag = 'True'
-
-        while flag:
-
-            existing_groups = []
-            
+        flag = 1
+        print (flag)
+        while flag == 1:
+            print('inside while loop')
+            existing_groups = []          
             new_group_number=0
             for members in group1:            
                 if len(members) > check_size:
@@ -340,12 +339,12 @@ class Groups(commands.Cog):
                     for x in members:
                         if x in list_member:
                             list_member.remove(x)
-                        
+                                
 
-        # print (existing_groups)
-        # print(list_member1)
-        # print(groups)
-        
+                # print (existing_groups)
+                # print(list_member1)
+                # print(groups)
+                
 
             final_groups=[]
             for group_num, members in existing_groups:            
@@ -353,7 +352,7 @@ class Groups(commands.Cog):
                     members.append(list_member.pop(0))
                 final_groups.append(members)
 
-            while len(list_member) >0:
+            while len(list_member) > 0:
                 members=[]
                 while len(members) < members_per_group and len(list_member) > 0 :
                     members.append(list_member.pop(0))
@@ -370,12 +369,12 @@ class Groups(commands.Cog):
                 else:
                     group1.append(groups)
             
-        
+
             if count > 1:
                 list_member= temp_list
                 check_size+=1
             else:
-                flag = 'False'
+                flag = 0
                 print (final_groups)
 
 
