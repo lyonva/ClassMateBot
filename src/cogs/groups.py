@@ -290,6 +290,8 @@ class Groups(commands.Cog):
     @commands.command(name='autogroup', help='autogroups members', pass_context=True)
 
     async def autogroup(self, ctx):
+
+        # Pulling the list of all members in the server
         list_member = db.query(
             'SELECT real_name FROM name_mapping WHERE guild_id = %s',
             (ctx.guild.id,)
@@ -297,64 +299,98 @@ class Groups(commands.Cog):
         temp = list_member[0]
         list_member = list(temp)
 
-        #list_member = ['ASHWITH SHETTYq1', 'u1', 'AS SHETTY', 'ASHWITH SHETTY', 'adads', 'fdv', 'fgkhds']
-        members_per_group= 6
-        #total_members= len(list_member)
-        #total_groups= math.ceil(total_members / members_per_group)
-        group1 = db.query(
+        
+        # 
+        # #total_members= len(list_member)
+        # #total_groups= math.ceil(total_members / members_per_group)
+
+        # # Pulling the list of existing groups
+        group2 = db.query(
             'SELECT group_num, array_agg(member_name) '
             'FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
             (ctx.guild.id,)
         )
 
-        existing_groups = []
-        #group1=[(2, ['ASHWITH SHETTY']), (3, ['u1', 'ASHWITH SHETTYq1']),(4, ['AS SHETTY'])]
-        new_group_number=0
-        for group_num, members in group1:            
-            if len(members) > 1:
-                new_group_number= new_group_number + 1
-                existing_groups.append(([new_group_number],members))
-                for x in members:
-                    if x in list_member:
-                        list_member.remove(x)
-                        db.query(
-                            'DELETE FROM group_members WHERE guild_id = %s AND member_name = %s',
-                            (ctx.guild.id, x)
-                        )
-                       
-            elif len(members)==1:
-                db.query(
-                    'DELETE FROM group_members WHERE guild_id = %s AND member_name = %s',
-                    (ctx.guild.id, members(0))
-                  )
+        #Deletes the existing groups from database
+        db.query(
+            'DELETE FROM group_members WHERE guild_id = %s',
+            (ctx.guild.id)
+        )
+
+        # creates the new groups
+        group1=[]
+        for group_num, members in group2:
+            group1.append(members)
+        
+        members_per_group= 6
+        group1=[['ASHWITH SHETTY'], ['u1', 'ASHWITH SHETTYq1'], ['AS SHETTY']]
+        list_member = ['ASHWITH SHETTYq1', 'u1', 'AS SHETTY', 'ASHWITH SHETTY', 'adads', 'fdv', 'fgkhds']
+        check_size = 1
+        flag = 'True'
+
+        while flag:
+
+            existing_groups = []
+            
+            new_group_number=0
+            for members in group1:            
+                if len(members) > check_size:
+                    new_group_number= new_group_number + 1
+                    existing_groups.append(([new_group_number],members))
+                    for x in members:
+                        if x in list_member:
+                            list_member.remove(x)
+                        
 
         # print (existing_groups)
         # print(list_member1)
         # print(groups)
         
 
-        final_groups=[]
-        for group_num, members in existing_groups:            
-            while len(members) < members_per_group and len(list_member) > 0 :
-                members.append(list_member.pop(0))
-            final_groups.append(members)
+            final_groups=[]
+            for group_num, members in existing_groups:            
+                while len(members) < members_per_group and len(list_member) > 0 :
+                    members.append(list_member.pop(0))
+                final_groups.append(members)
 
-        while len(list_member) >0:
-            members=[]
-            while len(members) < members_per_group and len(list_member) > 0 :
-                members.append(list_member.pop(0))
-            final_groups.append(members)
+            while len(list_member) >0:
+                members=[]
+                while len(members) < members_per_group and len(list_member) > 0 :
+                    members.append(list_member.pop(0))
+                final_groups.append(members)
 
-        final_group_number=1
-    
+            count=0
+            temp_list=[]
+            group1=[]
+            for groups in final_groups:
+                if len(groups) < members_per_group:
+                    count+=1
+                    for members in groups:
+                        temp_list.append(members)
+                else:
+                    group1.append(groups)
+            
+        
+            if count > 1:
+                list_member= temp_list
+                check_size+=1
+            else:
+                flag = 'False'
+                print (final_groups)
+
+
+# Adding final group list to database
+
+        final_group_number= 0 
         for x in final_groups:
+            final_group_number+=1
             for membername in x:
                 print (membername, final_group_number)
                 db.query(
                     'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
                     (ctx.guild.id, final_group_number, membername)
                     )
-            final_group_number+=1
+            
 
 
 
