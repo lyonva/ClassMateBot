@@ -9,3 +9,4 @@ def get_all_ids_by_user( ctx ):
     aid = ctx.author.id
     all_guilds = ctx.bot.guilds
     return [ g.id for g in all_guilds if g.get_member( aid ) is not None ]
+
