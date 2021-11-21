@@ -9,20 +9,64 @@ import os
 import asyncio
 from datetime import datetime, timedelta
 import sys
+import discord
 from discord.ext import commands
+from utils import get_all_guild_names_by_id
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
 
-def is_dm():
-    def predicate(ctx):
-        return ctx.guild is None
-    return commands.check(predicate)
+async def reminders_to_pages( reminders, guild_ids, guild_names ):
+    total = len(guild_ids)
+    pages = []
+    for i, (name, id) in enumerate(zip(guild_names, guild_ids)):
+        title = f"{name} ({i+1}/{total})"
+        description = ""
+        for guild_id, course, homework, due_date in reminders:
+            if guild_id == id:
+                description += f"{course} {homework} is due this week at {due_date}\n"
+        if description == "":
+            description = "Good news: nothing due this week!"
+        new_page = discord.Embed( 
+            title = title,
+            description = description,
+            coluor = discord.Colour.orange(),
+        )
+        pages.append(new_page)
+    
+    return pages
 
-def is_sm():
-    def predicate(ctx):
-        return ctx.guild is not None
-    return commands.check(predicate)
+async def send_manage_pages(ctx, pages):
+    if len(pages) > 0:
+        message = await ctx.send(embed = pages[0])
+        await message.add_reaction('◀')
+        await message.add_reaction('▶')
+        
+        def check(reaction, user):
+            return user == ctx.author
+
+        i = 0
+        reaction = None
+        
+        while True:
+            if str(reaction) == '◀':
+                i -= 1
+                i %= len(pages)
+                await message.edit(embed = pages[i])
+            elif str(reaction) == '▶':
+                i += 1
+                i %= len(pages)
+                await message.edit(embed = pages[i])
+            
+            try:
+                reaction, user = await ctx.bot.wait_for('reaction_add', timeout = 30.0, check = check)
+            except Exception as e:
+                print(e)
+                break
+    else:
+        await ctx.send("Congratulations! You have no upcoming reminders.")
+            
+    
 
 class Deadline(commands.Cog):
 
@@ -202,15 +246,21 @@ class Deadline(commands.Cog):
     @commands.command(name="duethisweek", pass_context=True,
                       help="check all the homeworks that are due this week $duethisweek")
     async def duethisweek(self, ctx):
-        reminders = db.query(
-            "SELECT course, homework, due_date "
-            "FROM reminders "
-            "WHERE guild_id = %s AND date_part('day', due_date - now()) <= 7",
-            (ctx.guild.id,)
-        )
-
-        for course, homework, due_date in reminders:
-            await ctx.send(f"{course} {homework} is due this week at {due_date}")
+        if ctx.guild is None:
+            reminders = db.query(
+                "SELECT guild_id, course, homework, due_date "
+                "FROM reminders "
+                "WHERE author_id = %s AND date_part('day', due_date - now()) <= 7",
+                (ctx.author.id,)
+            )
+            guild_ids = list(set([ r[0] for r in reminders ]))
+            guild_names = get_all_guild_names_by_id(ctx, guild_ids)
+            pages = await reminders_to_pages( reminders, guild_ids, guild_names )
+            await send_manage_pages( ctx, pages )
+            
+        else:
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
         # for reminder in self.reminders:
         #     timeleft = datetime.strptime(reminder["DUEDATE"], '%Y-%m-%d %H:%M:%S') - time
@@ -231,23 +281,19 @@ class Deadline(commands.Cog):
     @commands.command(name="duetoday", pass_context=True, help="check all the homeworks that are due today $duetoday")
     async def duetoday(self, ctx):
         if ctx.guild is None:
-            due_today = db.query(
-                "SELECT course, homework, due_date::time AS due_time "
+            reminders = db.query(
+                "SELECT guild_id, course, homework, due_date::time AS due_time "
                 "FROM reminders "
-                "WHERE guild_id = %s AND due_date::date = now()::date",
-                (ctx.guild.id,)
+                "WHERE author_id = %s AND due_date::date = now()::date",
+                (ctx.author.id,)
             )
+            guild_ids = list(set([ r[0] for r in reminders ]))
+            guild_names = get_all_guild_names_by_id(ctx, guild_ids)
+            pages = await reminders_to_pages( reminders, guild_ids, guild_names )
+            await send_manage_pages( ctx, pages )
         else:
-            due_today = db.query(
-                "SELECT course, homework, due_date::time AS due_time "
-                "FROM reminders "
-                "WHERE guild_id = %s AND due_date::date = now()::date",
-                (ctx.guild.id,)
-            )
-        for course, homework, due_time in due_today:
-            await ctx.send(f"{course} {homework} is due today at {due_time} UTC")
-        if len(due_today) == 0:
-            await ctx.send("You have no dues today..!!")
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: coursedue(self, ctx, courseid: str)
@@ -263,14 +309,18 @@ class Deadline(commands.Cog):
                       help="check all the homeworks that are due for a specific course $coursedue coursename "
                       "ex. $coursedue CSC505")
     async def coursedue(self, ctx, courseid: str):
-        reminders = db.query(
-            'SELECT homework, due_date FROM reminders WHERE guild_id = %s AND course = %s',
-            (ctx.guild.id, courseid)
-        )
-        for homework, due_date in reminders:
-            await ctx.send(f"{homework} is due at {due_date}")
-        if len(reminders) == 0:
-            await ctx.send(f"Rejoice..!! You have no pending homeworks for {courseid}..!!")
+        if ctx.guild is None:
+            reminders = db.query(
+                'SELECT guild_id, course, homework, due_date FROM reminders WHERE author_id = %s AND course = %s',
+                (ctx.author.id, courseid)
+            )
+            guild_ids = list(set([ r[0] for r in reminders ]))
+            guild_names = get_all_guild_names_by_id(ctx, guild_ids)
+            pages = await reminders_to_pages( reminders, guild_ids, guild_names )
+            await send_manage_pages( ctx, pages )
+        else:
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
     @coursedue.error
     async def coursedue_error(self, ctx, error):
@@ -291,15 +341,18 @@ class Deadline(commands.Cog):
     @commands.command(name="listreminders", pass_context=True, help="lists all reminders")
     async def listreminders(self, ctx):
         author = ctx.message.author
-        reminders = db.query(
-            'SELECT course, homework, due_date FROM reminders WHERE guild_id = %s and author_id = %s',
-            (ctx.guild.id, author.id)
-        )
-
-        for course, homework, due_date in reminders:
-            await ctx.send(f"{course} homework named: {homework} which is due on: {due_date} by {author.name}")
-        if not reminders:
-            await ctx.send("Mission Accomplished..!! You don't have any more dues..!!")
+        if ctx.guild is None:
+            reminders = db.query(
+                'SELECT guild_id, course, homework, due_date FROM reminders WHERE author_id = %s',
+                (author.id,)
+            )
+            guild_ids = list(set([ r[0] for r in reminders ]))
+            guild_names = get_all_guild_names_by_id(ctx, guild_ids)
+            pages = await reminders_to_pages( reminders, guild_ids, guild_names )
+            await send_manage_pages( ctx, pages )
+        else:
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
     # ---------------------------------------------------------------------------------
     #    Function: clearallreminders(self, ctx)
@@ -313,8 +366,12 @@ class Deadline(commands.Cog):
 
     @commands.command(name="clearreminders", pass_context=True, help="deletes all reminders")
     async def clearallreminders(self, ctx):
-        db.query('DELETE FROM reminders WHERE guild_id = %s', (ctx.guild.id,))
-        await ctx.send("All reminders have been cleared..!!")
+        if ctx.guild is None:
+            db.query('DELETE FROM reminders WHERE author_id = %s', (ctx.author.id,))
+            await ctx.send("All your reminders have been cleared.")
+        else:
+            await ctx.message.delete()
+            await ctx.author.send( "That command is DM only. Try DMing me." )
 
     # ---------------------------------------------------------------------------------
     #    Function: remindme(self, ctx, quantity: int, time_unit : str,*, text :str)
