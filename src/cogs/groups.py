@@ -389,7 +389,30 @@ class Groups(commands.Cog):
                     'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
                     (ctx.guild.id, final_group_number, membername)
                     )
-            
+        
+# Removes members from their existing group channel and places them in their new group channel
+        for i in range(100):
+            group_name = "group-" + str(i)
+            existing_channel = get(ctx.guild.text_channels, name=group_name)
+            if existing_channel is not None:
+                await existing_channel.delete()
+
+# Places the members in their new group channel
+
+        group_num = 1
+        for groups in final_groups:
+            role_string = "group_" + str(group_num)
+            user_role = get(ctx.guild.roles, name=role_string)
+
+            overwrites = {
+                ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                ctx.author: discord.PermissionOverwrite(read_messages=True),
+                user_role: discord.PermissionOverwrite(read_messages=True)
+            }
+            group_channel_name = "group-" + str(group_num)
+            await ctx.guild.create_text_channel(group_channel_name, overwrites=overwrites)
+            group_num+=1
+
 
 
 
