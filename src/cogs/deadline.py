@@ -112,7 +112,7 @@ class Deadline(commands.Cog):
                       help="add homework and due-date $addhw HW_NAME MMM DD YYYY optional(HH:MM) "
                       "ex. $addhw HW2 SEP 25 2024 17:02")
     @is_sm()
-    async def duedate(self, ctx, hwcount: str, *, date: str):
+    async def addhw(self, ctx, hwcount: str, *, date: str):
         author = ctx.message.author
         await ctx.message.delete()
         
@@ -126,23 +126,30 @@ class Deadline(commands.Cog):
                 await ctx.author.send("Due date could not be parsed")
                 return
 
-        existing = db.query(
-            'SELECT * FROM reminders WHERE guild_id = %s AND homework = %s',
-            (ctx.guild.id, hwcount)
-        )
-        if not existing:
-            db.query(
-                'INSERT INTO reminders (guild_id, author_id, homework, due_date) VALUES (%s, %s, %s, %s)',
-                (ctx.guild.id, author.id, hwcount, duedate)
+        if is_instructor( ctx ):
+            members = ctx.guild.members
+        else:
+            members = [ ctx.author ]
+        sent = False
+        for m in members:
+            existing = db.query(
+                'SELECT * FROM reminders WHERE guild_id = %s AND homework = %s AND author_id = %s',
+                (ctx.guild.id, hwcount, m.id)
             )
+            if not existing:
+                db.query(
+                    'INSERT INTO reminders (guild_id, author_id, homework, due_date) VALUES (%s, %s, %s, %s)',
+                    (ctx.guild.id, m.id, hwcount, duedate)
+                )
+                sent = True
+        if sent:
             await ctx.author.send(
-                f"A date has been added for: homework named: {hwcount} "
-                f"which is due on: {duedate} by {author}.")
+                f"Homework: {hwcount} due on: {duedate} has been added.")
         else:
             await ctx.author.send("A homework under this name already exists.")
 
-    @duedate.error
-    async def duedate_error(self, ctx, error):
+    @addhw.error
+    async def addhw_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
                 'To use the addhw command, do: $addhw HW_NAME MMM DD YYYY optional(HH:MM) \n '
@@ -168,19 +175,30 @@ class Deadline(commands.Cog):
     @is_sm()
     async def deleteReminder(self, ctx, hwName: str):
         await ctx.message.delete()
-        reminders_deleted = db.query(
-            'SELECT homework, due_date FROM reminders WHERE guild_id = %s AND homework = %s',
-            (ctx.guild.id, hwName)
-        )
-        db.query(
-            'DELETE FROM reminders WHERE guild_id = %s AND homework = %s',
-            (ctx.guild.id, hwName)
-        )
+        
+        if is_instructor( ctx ):
+            reminders_deleted = db.query(
+                'SELECT homework, due_date FROM reminders WHERE guild_id = %s AND homework = %s',
+                (ctx.guild.id, hwName)
+            )
+            db.query(
+                'DELETE FROM reminders WHERE guild_id = %s AND homework = %s',
+                (ctx.guild.id, hwName)
+            )
+        else:
+            reminders_deleted = db.query(
+                'SELECT homework, due_date FROM reminders WHERE guild_id = %s AND homework = %s AND author_id = %s',
+                (ctx.guild.id, hwName, ctx.author.id)
+            )
+            db.query(
+                'DELETE FROM reminders WHERE guild_id = %s AND homework = %s AND author_id = %s',
+                (ctx.guild.id, hwName, ctx.author.id)
+            )
 
-        for homework, due_date in reminders_deleted:
-            due = due_date.strftime("%Y-%m-%d %H:%M:%S")
-            await ctx.author.send(f"Following reminder has been deleted: "
-                f"Homework Name: {homework}, Due Date: {due}")
+        if len(reminders_deleted) > 0:
+            await ctx.author.send(f"Reminders deleted.")
+        else:
+            await ctx.author.send(f"The chosen homework does not exist.")
 
     @deleteReminder.error
     async def deleteReminder_error(self, ctx, error):
@@ -219,17 +237,30 @@ class Deadline(commands.Cog):
                 await ctx.author.send("Due date could not be parsed")
                 return
 
-        # future = (time.time() + (duedate - datetime.today()).total_seconds())
-        updated_reminders = db.query(
-            'SELECT due_date FROM reminders WHERE guild_id = %s AND homework = %s',
-            (ctx.guild.id, hwid)
-        )
-        db.query(
-            'UPDATE reminders SET author_id = %s, due_date = %s WHERE guild_id = %s AND homework = %s',
-            (author.id, duedate, ctx.guild.id, hwid)
-        )
-        for due_date in updated_reminders:
-            await ctx.author.send(f"{hwid} has been updated with following date: {due_date}")
+        
+        if is_instructor( ctx ):
+            updated_reminders = db.query(
+                'SELECT due_date FROM reminders WHERE guild_id = %s AND homework = %s',
+                (ctx.guild.id, hwid)
+            )
+            db.query(
+                'UPDATE reminders SET due_date = %s WHERE guild_id = %s AND homework = %s',
+                (duedate, ctx.guild.id, hwid)
+            )
+        else:
+            updated_reminders = db.query(
+                'SELECT due_date FROM reminders WHERE guild_id = %s AND homework = %s AND author_id = %s',
+                (ctx.guild.id, hwid, ctx.author.id)
+            )
+            db.query(
+                'UPDATE reminders SET due_date = %s WHERE guild_id = %s AND homework = %s AND author_id = %s',
+                (duedate, ctx.guild.id, hwid, ctx.author.id)
+            )
+        
+        if len(updated_reminders) > 0:
+            await ctx.author.send(f"{hwid} has been updated with following date: {duedate}")
+        else:
+            await ctx.author.send(f"The chosen homework does not exist.")
 
     @changeduedate.error
     async def changeduedate_error(self, ctx, error):
