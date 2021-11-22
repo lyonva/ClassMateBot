@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 import sys
 import discord
 from discord.ext import commands
-from utils import get_all_guild_names_by_id
+from utils import get_all_guild_names_by_id, is_instructor, is_dm, is_sm
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
@@ -64,8 +64,7 @@ async def send_manage_pages(ctx, pages):
                 break
     else:
         await ctx.send("Congratulations! You have no upcoming reminders.")
-            
-    
+
 
 class Deadline(commands.Cog):
 
@@ -112,9 +111,11 @@ class Deadline(commands.Cog):
     @commands.command(name="addhw",
                       help="add homework and due-date $addhw HW_NAME MMM DD YYYY optional(HH:MM) "
                       "ex. $addhw HW2 SEP 25 2024 17:02")
+    @is_sm()
     async def duedate(self, ctx, hwcount: str, *, date: str):
         author = ctx.message.author
-
+        await ctx.message.delete()
+        
         try:
             duedate = datetime.strptime(date, '%b %d %Y %H:%M')
             # print(seconds)
@@ -122,7 +123,7 @@ class Deadline(commands.Cog):
             try:
                 duedate = datetime.strptime(date, '%b %d %Y')
             except ValueError:
-                await ctx.send("Due date could not be parsed")
+                await ctx.author.send("Due date could not be parsed")
                 return
 
         existing = db.query(
@@ -134,18 +135,20 @@ class Deadline(commands.Cog):
                 'INSERT INTO reminders (guild_id, author_id, homework, due_date) VALUES (%s, %s, %s, %s)',
                 (ctx.guild.id, author.id, hwcount, duedate)
             )
-            await ctx.send(
+            await ctx.author.send(
                 f"A date has been added for: homework named: {hwcount} "
                 f"which is due on: {duedate} by {author}.")
         else:
-            await ctx.send("This homework has already been added..!!")
+            await ctx.author.send("A homework under this name already exists.")
 
     @duedate.error
     async def duedate_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                'To use the addhw command, do: $addhw CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) \n '
-                '( For example: $addhw CSC510 HW2 SEP 25 2024 17:02 )')
+            await ctx.author.send(
+                'To use the addhw command, do: $addhw HW_NAME MMM DD YYYY optional(HH:MM) \n '
+                '( For example: $addhw HW2 SEP 25 2024 17:02 )')
+        if isinstance(error, commands.CheckFailure):
+            await ctx.author.send( "This command can only be used inside a server." )
         print(error)
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -162,7 +165,9 @@ class Deadline(commands.Cog):
     @commands.command(name="deletereminder", pass_context=True,
                       help="delete a specific reminder using a homework name using "
                       "$deletereminder HW_NAME ex. $deletereminder HW2 ")
+    @is_sm()
     async def deleteReminder(self, ctx, hwName: str):
+        await ctx.message.delete()
         reminders_deleted = db.query(
             'SELECT homework, due_date FROM reminders WHERE guild_id = %s AND homework = %s',
             (ctx.guild.id, hwName)
@@ -174,15 +179,17 @@ class Deadline(commands.Cog):
 
         for homework, due_date in reminders_deleted:
             due = due_date.strftime("%Y-%m-%d %H:%M:%S")
-            await ctx.send(f"Following reminder has been deleted: "
+            await ctx.author.send(f"Following reminder has been deleted: "
                 f"Homework Name: {homework}, Due Date: {due}")
 
     @deleteReminder.error
     async def deleteReminder_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
+            await ctx.author.send(
                 'To use the deletereminder command, do: $deletereminder HW_NAME \n '
                 '( For example: $deletereminder HW2 )')
+        if isinstance(error, commands.CheckFailure):
+            await ctx.author.send( "This command can only be used inside a server." )
         print(error)
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -199,15 +206,17 @@ class Deadline(commands.Cog):
     @commands.command(name="changeduedate", pass_context=True,
                       help="update the assignment date. $changeduedate CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) "
                       "ex. $changeduedate CSC510 HW2 SEP 25 2024 17:02 ")
+    @is_sm()
     async def changeduedate(self, ctx, hwid: str, *, date: str):
         author = ctx.message.author
+        await ctx.message.delete()
         try:
             duedate = datetime.strptime(date, '%b %d %Y %H:%M')
         except ValueError:
             try:
                 duedate = datetime.strptime(date, '%b %d %Y')
             except ValueError:
-                await ctx.send("Due date could not be parsed")
+                await ctx.author.send("Due date could not be parsed")
                 return
 
         # future = (time.time() + (duedate - datetime.today()).total_seconds())
@@ -220,14 +229,16 @@ class Deadline(commands.Cog):
             (author.id, duedate, ctx.guild.id, hwid)
         )
         for due_date in updated_reminders:
-            await ctx.send(f"{hwid} has been updated with following date: {due_date}")
+            await ctx.author.send(f"{hwid} has been updated with following date: {due_date}")
 
     @changeduedate.error
     async def changeduedate_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
+            await ctx.author.send(
                 'To use the changeduedate command, do: $changeduedate CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) \n'
                 ' ( For example: $changeduedate CSC510 HW2 SEP 25 2024 17:02 )')
+        if isinstance(error, commands.CheckFailure):
+            await ctx.author.send( "This command can only be used inside a server." )
         print(error)
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -241,20 +252,22 @@ class Deadline(commands.Cog):
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="duethisweek", pass_context=True,
                       help="check all the homeworks that are due this week $duethisweek")
+    @is_dm()
     async def duethisweek(self, ctx):
-        if ctx.guild is None:
-            reminders = db.query(
-                "SELECT guild_id, homework, due_date "
-                "FROM reminders "
-                "WHERE author_id = %s AND date_part('day', due_date - now()) <= 7",
-                (ctx.author.id,)
-            )
-            guild_ids = list(set([ r[0] for r in reminders ]))
-            guild_names = get_all_guild_names_by_id(ctx, guild_ids)
-            pages = await reminders_to_pages( reminders, guild_ids, guild_names )
-            await send_manage_pages( ctx, pages )
-            
-        else:
+        reminders = db.query(
+            "SELECT guild_id, homework, due_date "
+            "FROM reminders "
+            "WHERE author_id = %s AND date_part('day', due_date - now()) <= 7",
+            (ctx.author.id,)
+        )
+        guild_ids = list(set([ r[0] for r in reminders ]))
+        guild_names = get_all_guild_names_by_id(ctx, guild_ids)
+        pages = await reminders_to_pages( reminders, guild_ids, guild_names )
+        await send_manage_pages( ctx, pages )
+    
+    @duethisweek.error
+    async def duethisweek_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
             await ctx.message.delete()
             await ctx.author.send( "That command is DM only. Try DMing me." )
 
@@ -268,19 +281,22 @@ class Deadline(commands.Cog):
     #          returns a list of all the assignments that are due on the day the command is run
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="duetoday", pass_context=True, help="check all the homeworks that are due today $duetoday")
+    @is_dm()
     async def duetoday(self, ctx):
-        if ctx.guild is None:
-            reminders = db.query(
-                "SELECT guild_id,homework, due_date::time AS due_time "
-                "FROM reminders "
-                "WHERE author_id = %s AND due_date::date = now()::date",
-                (ctx.author.id,)
-            )
-            guild_ids = list(set([ r[0] for r in reminders ]))
-            guild_names = get_all_guild_names_by_id(ctx, guild_ids)
-            pages = await reminders_to_pages( reminders, guild_ids, guild_names )
-            await send_manage_pages( ctx, pages )
-        else:
+        reminders = db.query(
+            "SELECT guild_id,homework, due_date::time AS due_time "
+            "FROM reminders "
+            "WHERE author_id = %s AND due_date::date = now()::date",
+            (ctx.author.id,)
+        )
+        guild_ids = list(set([ r[0] for r in reminders ]))
+        guild_names = get_all_guild_names_by_id(ctx, guild_ids)
+        pages = await reminders_to_pages( reminders, guild_ids, guild_names )
+        await send_manage_pages( ctx, pages )
+    
+    @duetoday.error
+    async def duetoday_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
             await ctx.message.delete()
             await ctx.author.send( "That command is DM only. Try DMing me." )
 
@@ -294,18 +310,21 @@ class Deadline(commands.Cog):
     #             returns a list of all the assignments
     # ---------------------------------------------------------------------------------
     @commands.command(name="listreminders", pass_context=True, help="lists all reminders")
+    @is_dm()
     async def listreminders(self, ctx):
         author = ctx.message.author
-        if ctx.guild is None:
-            reminders = db.query(
-                'SELECT guild_id, homework, due_date FROM reminders WHERE author_id = %s',
-                (author.id,)
-            )
-            guild_ids = list(set([ r[0] for r in reminders ]))
-            guild_names = get_all_guild_names_by_id(ctx, guild_ids)
-            pages = await reminders_to_pages( reminders, guild_ids, guild_names )
-            await send_manage_pages( ctx, pages )
-        else:
+        reminders = db.query(
+            'SELECT guild_id, homework, due_date FROM reminders WHERE author_id = %s',
+            (author.id,)
+        )
+        guild_ids = list(set([ r[0] for r in reminders ]))
+        guild_names = get_all_guild_names_by_id(ctx, guild_ids)
+        pages = await reminders_to_pages( reminders, guild_ids, guild_names )
+        await send_manage_pages( ctx, pages )
+    
+    @listreminders.error
+    async def listreminders_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
             await ctx.message.delete()
             await ctx.author.send( "That command is DM only. Try DMing me." )
 
@@ -323,10 +342,11 @@ class Deadline(commands.Cog):
     async def clearallreminders(self, ctx):
         if ctx.guild is None:
             db.query('DELETE FROM reminders WHERE author_id = %s', (ctx.author.id,))
-            await ctx.send("All your reminders have been cleared.")
+            await ctx.author.send("All your reminders have been cleared.")
         else:
             await ctx.message.delete()
-            await ctx.author.send( "That command is DM only. Try DMing me." )
+            db.query('DELETE FROM reminders WHERE author_id = %s AND guild_id = %s', (ctx.author.id,ctx.guild.id))
+            await ctx.author.send("All your reminders from this server have been cleared.")
 
     # ---------------------------------------------------------------------------------
     #    Function: remindme(self, ctx, quantity: int, time_unit : str,*, text :str)
