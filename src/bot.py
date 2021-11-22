@@ -190,7 +190,7 @@ async def on_member_join(member):
     await member.add_roles(unverified) # assigns the unverified role to the new member 
     await verification.send("Hello " + member.name + "!")
     await verification.send(
-        "Verify yourself before getting started! \n Send the following command: $verify <your_full_name> \n \
+        "Verify yourself before getting started! \n Send the following command: $verify <your_full_name> \
         ( For example: $verify Jane Doe )")
 
 
