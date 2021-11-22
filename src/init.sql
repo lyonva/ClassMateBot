@@ -1,7 +1,6 @@
 CREATE TABLE reminders (
     guild_id        BIGINT NOT NULL,
     author_id       BIGINT NOT NULL,
-    course          VARCHAR NOT NULL,
     homework        VARCHAR NOT NULL,
     due_date        TIMESTAMP WITH TIME ZONE NOT NULL
 );
