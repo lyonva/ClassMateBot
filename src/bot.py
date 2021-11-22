@@ -56,14 +56,16 @@ async def on_guild_join(guild):
     
     Instructor = get( guild.roles, name="Instructor")
     
-    # bot = get(guild.roles, name="Fuck you bot")
+    general = get(guild.text_channels, name="general")
     
+    # Default permissions for member roles.
     overwrites = {
         unverified: discord.PermissionOverwrite(read_messages=False, send_messages=False),
         guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True),
         Instructor: discord.PermissionOverwrite(read_messages=True, send_messages=True)
     }
     
+    # If channels don't exist, create and set default permissions
     if 'instructor-commands' not in guild.text_channels:
         await guild.create_text_channel('instructor-commands', overwrites=overwrites)
         print("instructor-commands channel has been added!")
@@ -71,73 +73,30 @@ async def on_guild_join(guild):
         await guild.create_text_channel('q-and-a', overwrites=overwrites)
         print("q-and-a channel has been added!")
     if 'verification' not in guild.text_channels:
-        await guild.create_text_channel('verification')
+        await guild.create_text_channel('verification') # Everyone is allowed to read/write to verification channel
         print("verification channel has been added!")
-        
+    
+    # Unverified members cannot send messages in general
+    await general.set_permissions(unverified, send_messages=False)
         
     leader = guild.owner
+    
     # Assign Instructor role to Guild owner
     await leader.add_roles(verified, reason=None, atomic=True)
     await leader.add_roles(Instructor, reason=None, atomic=True)
     print(leader.name + " has been given Instructor role!")
+    
     # Add leader to name_mapping table
     # Using leader's username as real_name
     db.query('INSERT INTO name_mapping (guild_id, author_id, username, real_name) VALUES (%s, %s, %s, %s)',
                          (guild.id, leader.id, leader.name, leader.name))
-    # for channel in guild.
     
     for member in guild.members:
+        # If member is not the bot and the owner of the server.
         if member != guild.owner and member != guild.me:
             await member.add_roles(unverified, reason=None, atomic=True)
     print('member roles assigned')
-    print(guild.text_channels)
     
-    
-# @bot.event
-# async def on_guild_join(guild):
-#     for channel in guild.text_channels:
-#         if channel.permissions_for(guild.me).send_messages and channel.name == "verification":
-#             if discord.utils.get(guild.roles, name="verified") is None:
-#                 await guild.create_role(name="verified", colour=discord.Colour(0x2ecc71),
-#                                         permissions=discord.Permissions.general())
-#             if discord.utils.get(guild.roles, name="unverified") is None:
-#                 await guild.create_role(name="unverified", colour=discord.Colour(0xe74c3c),
-#                                         permissions=discord.Permissions.none())
-#                 unverified = discord.utils.get(guild.roles, name="unverified")
-#                 # unverified members can only see/send messages in general channel until they verify
-#                 overwrite = discord.PermissionOverwrite()
-#                 overwrite.update(send_messages = True)
-#                 overwrite.update(read_messages = True)
-                
-                    
-#                 # if channel.permissions_for(guild.me).send_messages and channel.name == "verification":
-#                 #     # overwrite = discord.PermissionOverwrite()
-#                 #     overwrite.update(send_messages = True)
-#                 #     overwrite.update(read_messages = True)
-#                 #     await channel.set_permissions(unverified, overwrite=overwrite)
-#                 # else:
-#                 #     overwrite.update(send_messages = False)
-#                 #     overwrite.update(read_messages = False)
-#                 await channel.set_permissions(unverified, overwrite=overwrite)
-                        
-#             if discord.utils.get(guild.roles, name="Instructor") is None:
-#                 await guild.create_role(name="Instructor", colour=discord.Colour(0x3498db),
-#                                         permissions=discord.Permissions.all())
-#             # Assign Verified role to Guild owner
-#             leader = guild.owner
-#             # leadrole = get(guild.roles, name="verified")
-#             unverified = discord.utils.get(guild.roles, name="unverified")
-#             # await leader.add_roles(leadrole, reason=None, atomic=True)
-#             # await channel.send(leader.name + " has been given verified role!")
-#             # Assign Instructor role to Guild owner
-#             leadrole = get(guild.roles, name="Instructor")
-#             await leader.add_roles(leadrole, reason=None, atomic=True)
-#             await channel.send(leader.name + " has been given Instructor role!")
-#             # Assign unverified role to all other members
-#             await leader.add_roles(leadrole, reason=None, atomic=True)
-#             for member in guild.members:
-#                 await member.add_roles(unverified, reason=None, atomic=True)
-#             await channel.send("To verify yourself, send \"$verify <FirstName LastName>\" in the verification channel!")
 
 # ------------------------------------------------------------------------------------------------------------------
 #    Function: on_ready()
@@ -168,7 +127,7 @@ async def on_ready():
 
     await bot.change_presence(
         activity=discord.Activity(
-            type=discord.ActivityType.watching, name="Over This Server"
+            type=discord.ActivityType.watching, name="Over Your Server"
         )
     )
     print("READY!")
@@ -224,14 +183,14 @@ async def on_message_edit(before, after):
 # ------------------------------------------------------------------------------------------
 @bot.event
 async def on_member_join(member):
-
+    verification = get(member.guild.text_channels, name='verification')
     unverified = discord.utils.get(
         member.guild.roles, name="unverified"
     )  # finds the unverified role in the guild
     await member.add_roles(unverified) # assigns the unverified role to the new member 
-    await member.send("Hello " + member.name + "!")
-    await member.send(
-        "Verify yourself before getting started! \n To use the verify command, do: $verify <your_full_name> \n \
+    await verification.send("Hello " + member.name + "!")
+    await verification.send(
+        "Verify yourself before getting started! \n Send the following command: $verify <your_full_name> \n \
         ( For example: $verify Jane Doe )")
 
 
