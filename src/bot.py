@@ -231,5 +231,6 @@ async def shutdown(ctx):
 
 
 # Starts the bot with the current token
-bot.run(TOKEN)
+if __name__ == "__main__":
+    bot.run(TOKEN)
 
