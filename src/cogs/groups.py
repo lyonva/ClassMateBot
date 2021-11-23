@@ -296,8 +296,12 @@ class Groups(commands.Cog):
             'SELECT real_name FROM name_mapping WHERE guild_id = %s',
             (ctx.guild.id,)
         )
-        temp = list_member[0]
-        list_member = list(temp)
+        temp =[]
+        for x in list_member:
+            temp.append(x[0])
+        
+        list_member = temp
+        
 
         
         # 
@@ -311,25 +315,33 @@ class Groups(commands.Cog):
             (ctx.guild.id,)
         )
 
-        #Deletes the existing groups from database
-        db.query(
-            'DELETE FROM group_members WHERE guild_id = %s',
-            (ctx.guild.id)
-        )
+
+        # #Deletes the existing groups from database
+        # db.query(
+        #     'DELETE FROM group_members WHERE guild_id = %s',
+        #     (ctx.guild.id)
+        # )
 
         # Places all the members in their new groups
         group1=[]
         for group_num, members in group2:
             group1.append(members)
+            for x in members:
+                db.query(
+                'DELETE FROM group_members WHERE guild_id = %s AND member_name = %s',
+                (ctx.guild.id, x)
+                 )
+#
+
         
         #group1=[['u1','u2', 'u3'], ['u4'], ['u6'], ['u5']]
         #list_member = ['u1','u2', 'u3', 'u4', 'u5', 'u6']
         members_per_group= 6
         check_size = 1
         flag = 1
-        print (flag)
+        #print (flag)
         while flag == 1:
-            print('inside while loop')
+            # print('inside while loop')
             existing_groups = []          
             new_group_number=0
             for members in group1:            
@@ -383,8 +395,10 @@ class Groups(commands.Cog):
         final_group_number= 0 
         for x in final_groups:
             final_group_number+=1
+            await ctx.send(f'group {final_group_number} - members:{x}' )
             for membername in x:
-                print (membername, final_group_number)
+                
+                #print (membername, final_group_number)
                 db.query(
                     'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
                     (ctx.guild.id, final_group_number, membername)
