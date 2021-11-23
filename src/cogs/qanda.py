@@ -66,17 +66,17 @@ class Qanda(commands.Cog):
         # delete original question
         await ctx.message.delete()
 
-    # -----------------------------------------------------------------------------------------------------------------
-    #    Function: ask_error(self, ctx, error)
-    #    Description: prints error message for ask command
-    #    Inputs:
-    #       - ctx: context of the command
-    #       - error: error message
-    #    Outputs:
-    #       - Error details
-    # -----------------------------------------------------------------------------------------------------------------
     @askQuestion.error
     async def ask_error(self, ctx, error):
+        """
+        Function: ask_error(self, ctx, error)
+        Description: prints error message for ask command
+        Inputs:
+            - ctx: context of the command
+            - error: error message
+        Outputs:
+            - Error details
+        """
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
                 'To use the ask command, do: $ask "QUESTION" anonymous*<optional>* \n '
@@ -86,24 +86,23 @@ class Qanda(commands.Cog):
             await ctx.author.send(error)
         await ctx.message.delete()
 
-    # -----------------------------------------------------------------------------------------------------------------
-    # Function: answer
-    # Description: adds user answer to specific question and post anonymously
-    # Inputs:
-    #      - ctx: context of the command
-    #      - num: question number being answered
-    #      - ans: answer text to question specified in num
-    #      - anonymous: option if user wants their question to be shown anonymously
-    # Outputs:
-    #      - User answer added to question post
-    # -----------------------------------------------------------------------------------------------------------------
     @commands.command(
         name="answer",
         help="Answer question. Please put answer text in quotes. Add *anonymous* if desired."
         'EX: $answer 1 /"Oct 12/" anonymous',
     )
     async def answer(self, ctx, num, ans, anonymous=""):
-        """answer the specific question"""
+        """
+        Function: answer
+        Description: adds user answer to specific question and post anonymously
+        Inputs:
+            - ctx: context of the command
+            - num: question number being answered
+            - ans: answer text to question specified in num
+            - anonymous: option if user wants their question to be shown anonymously
+        Outputs:
+            - User answer added to question post
+        """
         # make sure to check that this is actually being asked in the Q&A channel
         if not ctx.channel.name == "q-and-a":
             await ctx.author.send("Please send answers to the #q-and-a channel.")
@@ -173,17 +172,17 @@ class Qanda(commands.Cog):
         # delete user msg
         await ctx.message.delete()
 
-    # -----------------------------------------------------------------------------------------------------------------
-    #    Function: answer_error(self, ctx, error)
-    #    Description: prints error message for answer command
-    #    Inputs:
-    #       - ctx: context of the command
-    #       - error: error message
-    #    Outputs:
-    #       - Error details
-    # -----------------------------------------------------------------------------------------------------------------
     @answer.error
     async def answer_error(self, ctx, error):
+        """
+        Function: answer_error(self, ctx, error)
+        Description: prints error message for answer command
+        Inputs:
+           - ctx: context of the command
+           - error: error message
+        Outputs:
+           - Error details
+        """
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
                 'To use the answer command, do: $answer QUESTION_NUMBER "ANSWER" anonymous*<optional>*\n '
@@ -193,16 +192,16 @@ class Qanda(commands.Cog):
             await ctx.author.send(error)
         await ctx.message.delete()
 
-    # -----------------------------------------------------------------------------------------------------------------
-    # Function: getQAs
-    # Description: returns all questions and answers
-    # Inputs:
-    #      - ctx: context of the command
-    # Outputs:
-    #      - User answer added to question post
-    # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="getQAs", help="Sends DM of all questions and answers" "EX: $getQAs")
     async def getQAs(self, ctx):
+        """
+        Function: getQAs
+        Description: returns all questions and answers
+        Inputs:
+             - ctx: context of the command
+        Outputs:
+             - User answer added to question post
+        """
         results = await chooseGuild(self, ctx)
         guild_list = results[0]
         msg = results[1]
@@ -231,22 +230,22 @@ class Qanda(commands.Cog):
                         result += f"Answer: {answer_string}\n\n"
         await ctx.author.send(result)
 
-    # -----------------------------------------------------------------------------------------------------------------
-    # Function: getq
-    # Description: returns the requested question and answer
-    # Inputs:
-    #      - ctx: context of the command
-    #      - num: question number to get
-    # Outputs:
-    #      - Question and appropriate answer (if one exists)
-    # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="getq", help="Sends DM of all questions and answers" "EX: $getq 1")
     async def getQuestion(self, ctx):
+        """
+        Function: getq
+        Description: returns the requested question and answer
+        Inputs:
+             - ctx: context of the command
+             - num: question number to get
+        Outputs:
+             - Question and appropriate answer (if one exists)
+        """
         results = await chooseGuild(self, ctx)
-        msg = results[1]
-        guild_list = str(results[0][msg - 1])
+        msg = results[1]  # Int the user entered from previous function call
+        guild_list = str(results[0][msg - 1])  # Guild the user wishes to interact with
         result = ""
-        num = str(await chooseNumber(self, ctx))
+        num = str(await chooseNumber(self, ctx))  # Int of the question number the user entered
         questions = db.query(
             "SELECT number, question FROM questions WHERE guild_id = %s and number = %s",
             (guild_list, num),
@@ -261,7 +260,7 @@ class Qanda(commands.Cog):
                 answers = db.query(
                     "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
                     (guild_list[msg - 1], num),
-                )
+                )  # Selects the question number from the server the user requested
                 if answers == []:
                     answer_string = "No answer"
                     result += f"Answer: {answer_string}\n\n"
@@ -269,23 +268,23 @@ class Qanda(commands.Cog):
                     for answer in answers:
                         answer_string = answer[0]
                         result += f"Answer: {answer_string}\n\n"
-        await ctx.author.send(result)
+        await ctx.author.send(result)  # Prints the result of the question the user requested
 
-    # -----------------------------------------------------------------------------------------------------------------
-    # Function: deleteq
-    # Description: deletes a specific question/answer (if it exists) if you are an instructor
-    # Inputs:
-    #      - ctx: context of the command
-    #      - num: question number to delete
-    # Outputs:
-    #      - Confirmation/denial that question/answer was deleted
-    # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="deleteq", help="Deletes a requested question if you are an instructor" "EX: $deleteq")
     @commands.has_role("Instructor")
     async def deleteQuestion(self, ctx):
+        """
+        Function: deleteq
+        Description: deletes a specific question/answer (if it exists) if you are an instructor
+        Inputs:
+             - ctx: context of the command
+             - num: question number to delete
+        Outputs:
+             - Confirmation/denial that question/answer was deleted
+        """
         await ctx.message.delete()
         guild_id = ctx.guild.id
-        num = str(await chooseNumber(self, ctx))
+        num = str(await self.chooseNumber(ctx))
         questions = db.query(
             "SELECT number FROM questions WHERE guild_id = %s and number = %s",
             (guild_id, num),
@@ -323,15 +322,15 @@ class Qanda(commands.Cog):
                     f"Question {num} has been deleted\n"
                 )  # Tells the user a question and/or answer has been deleted
 
-    # -----------------------------------------------------------------------------------------------------------------
-    # Function: chooseNumber
-    # Description: asks for user input to enter a number which is used by various other functionalities
-    # Inputs:
-    #      - ctx: context of the command
-    # Outputs:
-    #      - msg_int: int representation of the number the user entered
-    # -----------------------------------------------------------------------------------------------------------------
     async def chooseNumber(self, ctx):
+        """
+        Function: chooseNumber
+        Description: asks for user input to enter a number which is used by various other functionalities
+        Inputs:
+             - ctx: context of the command
+        Outputs:
+             - msg_int: int representation of the number the user entered
+        """
         msg = ""
         msg_int = 0
 
