@@ -2,7 +2,7 @@
 This command lets the user get the offset needed for proper datetime reminders in UTC. 
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/deadline.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/deadline.py).
 
 # Code Description
 ## Functions

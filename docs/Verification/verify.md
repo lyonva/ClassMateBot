@@ -2,7 +2,7 @@
 This command verifies the user by getting their full name, storing this with their username in the database, and then granting access to the guild channels
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/bot.py) and [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/newComer.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/bot.py) and [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/newComer.py).
 
 # Code Description
 ## Functions
@@ -24,4 +24,4 @@ $verify Jane Doe
 ```
 Successful execution of this command will assign you some verified role and give you the access to the channels. You will also receive a welcome message from ClassMateBot with important links related to the course.
 
-![$verify Jane Doe](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/verify.PNG)
+![$verify Jane Doe](https://github.com/lyonva/ClassMateBot/blob/main/data/media/verify.PNG)
