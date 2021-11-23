@@ -17,9 +17,11 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - name: Install pdoc3
+    - name: Install pdoc3 and dependancies
       run: |
+        python -m pip install --upgrade pip
         python -m pip install pdoc3
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Generate documentation
       run: |
         pdoc3 --html ./src -o ./out --force --template-dir ${{ github.workspace }}/docs/pdoc3
