@@ -21,14 +21,11 @@ class Pinning(commands.Cog):
     # Test command to check if the bot is working
     @commands.command()
     async def helpful3(self, ctx):
-        await ctx.send(f"Pong! My ping currently is {round(self.bot.latency * 1000)}ms")
+        await ctx.author.send(f"Pong! My ping currently is {round(self.bot.latency * 1000)}ms")
 
        
 
-    @commands.command(name="pin",
-                      help="Pin a message by adding a tagname (single word) "
-                           "and a description(can be multi word). EX: $pin Homework Resources for HW2")
-    @is_dm()
+    @commands.command(name="pin", help="Pin a message by adding a tagname (single word) and a description(can be multi word).")
     async def addMessage(self, ctx, tagname: str, *, description: str):
         
         """
@@ -42,35 +39,34 @@ class Pinning(commands.Cog):
         Outputs: Adds pinned message to DB.
        """
         
-        
-        author = ctx.message.author
-        result = await chooseGuild(self, ctx)
-        
-        servers = result[0]
-        res = result[1]
-        
-        db.query(
-            'INSERT INTO pinned_messages (guild_id, author_id, tag, description) VALUES (%s, %s, %s, %s)',
-            (servers[res - 1], author.id, tagname, description)
-        )
+        if is_dm(ctx):
+            author = ctx.message.author
+            result = await chooseGuild(self, ctx)
+            
+            servers = result[0]
+            res = result[1]
+            
+            db.query(
+                'INSERT INTO pinned_messages (guild_id, author_id, tag, description) VALUES (%s, %s, %s, %s)',
+                (servers[res - 1], author.id, tagname, description)
+            )
 
-        await ctx.author.send(
-            f"A new message has been pinned with tag: {tagname} and description: {description} by {author}.")
+            await ctx.author.send(
+                f"A new message has been pinned with tag: {tagname} and description: {description}")
+        else:
+            await ctx.author.send("$pin command is DM only. Try sending it as a DM!")
 
     @addMessage.error
     async def addMessage_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
                 "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 <link to message> HW8 reminder )")
-        if isinstance(error, commands.CheckFailure):
-            await ctx.author.send("$pin command is DM only. Try sending it as a DM!")
         print(error)
         
 
    
 
     @commands.command(name="unpin", help="Unpin a message by passing the tagname.")
-    @is_dm()
     async def deleteMessage(self, ctx, tagname: str):
         
         
@@ -81,46 +77,45 @@ class Pinning(commands.Cog):
         - self: used to access parameters passed to the class through the constructor
         - ctx: used to access the values passed through the current context
         - tagname: the tag used to identify which pinned messages are to be deleted.
+        Outputs: Remove pinned message from DB.
         """
         
-        
-        author = ctx.message.author
+        if is_dm(ctx):
+            author = ctx.message.author
 
-        result = await chooseGuild(self, ctx)
-        
-        servers = result[0]
-        res = result[1]
-        
-        
-        rows_deleted = db.query(
-            'SELECT * FROM pinned_messages WHERE guild_id = %s AND tag = %s AND author_id = %s',
-            (servers[res - 1], tagname, author.id)
-        )
-        db.query(
-            'DELETE FROM pinned_messages WHERE guild_id = %s AND tag = %s AND author_id = %s',
-            (servers[res - 1], tagname, author.id)
-        )
+            result = await chooseGuild(self, ctx)
+            
+            servers = result[0]
+            res = result[1]
+            
+            
+            rows_deleted = db.query(
+                'SELECT * FROM pinned_messages WHERE guild_id = %s AND tag = %s AND author_id = %s',
+                (servers[res - 1], tagname, author.id)
+            )
+            db.query(
+                'DELETE FROM pinned_messages WHERE guild_id = %s AND tag = %s AND author_id = %s',
+                (servers[res - 1], tagname, author.id)
+            )
 
-        if len(rows_deleted) == 0:
-            await ctx.author.send(
-                f"No message found with the combination of tagname: {tagname}, and author: {author}.")
+            if len(rows_deleted) == 0:
+                await ctx.author.send(
+                    f"No message found with the combination of tagname: {tagname}, and author: {author}.")
+            else:
+                await ctx.author.send(
+                    f"{len(rows_deleted)} pinned message(s) has been deleted with tag: {tagname}.")
         else:
-            await ctx.author.send(
-                f"{len(rows_deleted)} pinned message(s) has been deleted with tag: {tagname}.")
+            await ctx.author.send('$unpin is a DM only command. Try sending it as a DM!')
 
     @deleteMessage.error
     async def deleteMessage_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
                 'To use the unpin command, do: $unpin TAGNAME \n ( For example: $unpin HW8 )')
-        if isinstance(error, commands.CheckFailure):
-            await ctx.send(
-                '$unpin is a DM only command. Try sending it as a DM!')
         print(error)
 
    
     @commands.command(name="pinnedmessages", help="Retrieve the pinned messages by a particular tag or all messages.")
-    @is_dm()
     async def retrieveMessages(self, ctx, tagname: str = ""):
 
         """
@@ -131,25 +126,30 @@ class Pinning(commands.Cog):
         - self: used to access parameters passed to the class through the constructor
         - ctx: used to access the values passed through the current context
         - tagname: the tag used to identify which pinned messages are to be retrieved.
+        Outputs: Retrieves pinned messages from DB.
         """
+        if is_dm(ctx):
+            author = ctx.message.author
 
-        author = ctx.message.author
+            result = await chooseGuild(self, ctx)
+            
+            servers = result[0]
+            res = result[1]
+            
+            if tagname == "":
+                messages = db.query(
+                    'SELECT tag, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s',
+                    (servers[res - 1], author.id)
+                )
+            else:
+                messages = db.query('SELECT tag, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s AND tag = %s',(ctx.guild.id, author.id, tagname))
 
-        if tagname == "":
-            messages = db.query(
-                'SELECT tag, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s',
-                (ctx.guild.id, author.id)
-            )
+            if len(messages) == 0:
+                await ctx.author.send("No messages found with the given tagname and author combination")
+            for tag, description in messages:
+                await ctx.author.send(f"Tag: {tag}, Description: {description}")
         else:
-            messages = db.query(
-                'SELECT tag, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s AND tag = %s',
-                (ctx.guild.id, author.id, tagname)
-            )
-
-        if len(messages) == 0:
-            await ctx.send("No messages found with the given tagname and author combination")
-        for tag, description in messages:
-            await ctx.send(f"Tag: {tag}, Description: {description}")
+            await ctx.author.send("$pinnedmessages is a DM only command! Try sending a DM")
 
 
     @retrieveMessages.error
@@ -157,34 +157,34 @@ class Pinning(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
                 "To use the pinnedmessages command, do: $pinnedmessages:"
-                " TAGNAME \n ( For example: $pinnedmessages HW8 )")
-        if isinstance(error, commands.CheckFailure):
-            await ctx.author.send("$pinnedmessages is a DM only command! Try sending a DM")
+                " TAGNAME \n ( For example: $pinnedmessages HW8 )")           
         print(error)
 
-    # ----------------------------------------------------------------------------------------------------------
-    #    Function: updatePinnedMessage(self, ctx, tagname: str, *, description: str)
-    #    Description: This is used to update a pinned message with a given tagname. Deletes old messages for the tag.
-    #    Inputs:
-    #    - self: used to access parameters passed to the class through the constructor
-    #    - ctx: used to access the values passed through the current context
-    #    - tagname: tag to be updated
-    #    - description: new description
-    # ----------------------------------------------------------------------------------------------------------
-    @commands.command(name="updatepin",
-                      help="Update a previously pinned message by passing the "
-                           "tagname and old description in the same order")
-    async def updatePinnedMessage(self, ctx, tagname: str, *, description: str):
-        await ctx.invoke(self.bot.get_command('unpin'), tagname)
-        await ctx.invoke(self.bot.get_command('pin'), tagname=tagname, description=description)
+       
 
+    @commands.command(name="updatepin", help="Update a previously pinned message by passing the tagname and old description in the same order")
+    async def updatePinnedMessage(self, ctx, tagname: str, *, description: str):
+        """
+        Function: updatePinnedMessage(self, ctx, tagname: str, *, description: str)
+        Description: This is used to update a pinned message with a given tagname. Deletes old messages for the tag.
+        Inputs:
+        - self: used to access parameters passed to the class through the constructor
+        - ctx: used to access the values passed through the current context
+        - tagname: tag to be updated
+        - description: new description
+        Outputs: Updates pinned message to DB.
+        """
+        if is_dm(ctx):
+            await ctx.invoke(self.bot.get_command('unpin'), tagname)
+            await ctx.invoke(self.bot.get_command('pin'), tagname=tagname, description=description)
+        else:
+            await ctx.author.send("$updatepin is a DM only command! Try sending a DM")
+            
     @updatePinnedMessage.error
     async def updatePinnedMessage_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
                 "To use the updatepin command, do: $pin TAGNAME DESCRIPTION \n ( $updatepin HW8 <link to message> HW8 reminder )")
-        if isinstance(error, commands.CheckFailure):
-            await ctx.author.send("$updatepin is a DM only command! Try sending a DM")
         print(error)
 
 
