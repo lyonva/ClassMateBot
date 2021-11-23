@@ -1,3 +1,6 @@
+from discord.ext import commands
+
+
 def get_guild_name_by_id(ctx, guild_id):
     serv = [g.name for g in ctx.bot.guilds if g.id == guild_id]
     return serv[0] if len(serv) == 1 else ""
@@ -56,3 +59,21 @@ async def chooseGuild(self, ctx):
                     print(e)
                     await ctx.author.send("You have entered an invalid option\n")
     return [guild_list, msg]
+
+
+def is_dm():
+    def predicate(ctx):
+        return ctx.guild is None
+
+    return commands.check(predicate)
+
+
+def is_sm():
+    def predicate(ctx):
+        return ctx.guild is not None
+
+    return commands.check(predicate)
+
+
+def is_instructor(ctx):
+    return "Instructor" in [r.name for r in ctx.author.roles]
