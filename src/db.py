@@ -2,19 +2,23 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 
-load_dotenv()
-
 CONN = None
 TESTING_MODE = False
-# def connect():
-    # global CONN
 
-DATABASE_URL = os.getenv('DATABASE_URL')
-try:
-    CONN = psycopg2.connect(DATABASE_URL, sslmode='require')
-    print('PostgreSQL connection successful')
-except (Exception, psycopg2.DatabaseError) as error:
-    print(error)
+def setup():
+    load_dotenv()
+
+    
+    # def connect():
+        # global CONN
+
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    try:
+        
+        print('PostgreSQL connection successful')
+        return psycopg2.connect(DATABASE_URL, sslmode='require')
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
 
 
 def query(sql, args=()):
