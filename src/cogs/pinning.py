@@ -10,6 +10,7 @@ from discord.ext import commands
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
+from utils import *
 
 
 class Pinning(commands.Cog):
@@ -34,24 +35,28 @@ class Pinning(commands.Cog):
     @commands.command(name="pin",
                       help="Pin a message by adding a tagname (single word) "
                            "and a description(can be multi word). EX: $pin Homework Resources for HW2")
+    @is_dm()
     async def addMessage(self, ctx, tagname: str, *, description: str):
         author = ctx.message.author
-
+        result = await chooseGuild(self, ctx)
+        
+        servers = result[0]
+        res = result[1]
+        
         db.query(
             'INSERT INTO pinned_messages (guild_id, author_id, tag, description) VALUES (%s, %s, %s, %s)',
-            (ctx.guild.id, author.id, tagname, description)
+            (servers[res - 1], author.id, tagname, description)
         )
 
-        await ctx.send(
+        await ctx.author.send(
             f"A new message has been pinned with tag: {tagname} and description: {description} by {author}.")
 
     @addMessage.error
     async def addMessage_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 https://"
-                "discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )")
+        if isinstance(error, commands.CheckFailure):
+            await ctx.author.send("This command is DM only. Try sending a DM!")
         print(error)
+        
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: deleteMessage(self, ctx, tagname: str, *)
