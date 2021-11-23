@@ -61,18 +61,12 @@ async def chooseGuild(self, ctx):
     return [guild_list, msg]
 
 
-def is_dm():
-    def predicate(ctx):
-        return ctx.guild is None
-
-    return commands.check(predicate)
+def is_dm(ctx):
+    return ctx.guild is None
 
 
-def is_sm():
-    def predicate(ctx):
-        return ctx.guild is not None
-
-    return commands.check(predicate)
+def is_sm(ctx):
+    return ctx.guild is not None
 
 
 def is_instructor(ctx):
