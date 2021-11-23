@@ -290,6 +290,8 @@ class Qanda(commands.Cog):
             "SELECT number FROM questions WHERE guild_id = %s and number = %s",
             (guild_id, num),
         )
+
+        # If a question isn't found for a particular server, an error is given
         if questions == []:
             await ctx.send(f"Question {num} does not exist")
         else:
@@ -299,11 +301,15 @@ class Qanda(commands.Cog):
                     "SELECT answer FROM answers WHERE guild_id = %s AND q_number = %s",
                     (guild_id, num),
                 )
+
+                # If a question doesn't have an answer, just the question is deleted
                 if answers == []:
                     db.query(
                         "DELETE FROM questions WHERE guild_id = %s and number = %s",
                         (guild_id, num),
                     )
+
+                # If a question does have an answer, the question and answer is deleted
                 else:
                     db.query(
                         "DELETE FROM questions WHERE guild_id = %s and number = %s",
@@ -313,48 +319,9 @@ class Qanda(commands.Cog):
                         "DELETE FROM answers WHERE guild_id = %s and q_number = %s",
                         (guild_id, num),
                     )
-                await ctx.send(f"Question {num} has been deleted\n")
-
-    # -----------------------------------------------------------------------------------------------------------------
-    # Function: chooseGuild
-    # Description: finds all servers user is a part of through a DM message with the bot
-    # Inputs:
-    #      - ctx: context of the command
-    # Outputs:
-    #      - guild_list: List of all guild id's the user is associated with
-    #      - msg: int representation of the number the user entered
-    # -----------------------------------------------------------------------------------------------------------------
-    async def chooseGuild(self, ctx):
-        msg = ""
-        guild_list = []
-        if ctx.guild == None:
-
-            def check(m):
-                return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
-
-            guilds = get_all_ids_by_user(ctx)
-            valid_answer = False
-            while valid_answer == False:
-                msg = ""
-                guild_list_string = "Choose a server (enter the number): \n"
-                current = 1
-                guild_list = []
-                if guilds == []:
-                    await ctx.author.send("You are not in any servers")
-                else:
-                    for guild in guilds:
-                        guild_list.append(guild)
-                        guild_list_string += f"{current}. {get_guild_name_by_id( ctx, guild )}\n"
-                        current += 1
-                    await ctx.author.send(guild_list_string)
-                    msg = await self.bot.wait_for("message", check=check)
-                    try:
-                        msg = int(msg.content)
-                        valid_answer = True
-                    except Exception as e:
-                        print(e)
-                        await ctx.author.send("You have entered an invalid option\n")
-        return [guild_list, msg]
+                await ctx.send(
+                    f"Question {num} has been deleted\n"
+                )  # Tells the user a question and/or answer has been deleted
 
     # -----------------------------------------------------------------------------------------------------------------
     # Function: chooseNumber
