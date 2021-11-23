@@ -1,5 +1,5 @@
 # About $reminderdelete
-This command lets the user delete a reminder for a specified coursename and homework. If used my an instructor, the reminder is deleted for every user. Otherwise, the reminder is deleted just for you.
+This command lets the user delete a reminder for a specified coursename and homework. If used by an instructor, the reminder is deleted for every user. Otherwise, the reminder is deleted just for you.
 
 # Location of Code
 The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/deadline.py).
