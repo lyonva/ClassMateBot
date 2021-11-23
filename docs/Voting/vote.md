@@ -2,7 +2,7 @@
 This command lets the groups vote on projects that they want to be working on next.
 
 # Location of Code
-The code that implements the above-mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/voting.py)
+The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/voting.py)
 
 # Code Description
 ## Functions
@@ -22,4 +22,4 @@ Successful execution of this command will return a message saying you have voted
   
 It is simple enough to change vote by just voting for a different project.
   
-![image](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/votechange.gif)
+![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/votechange.gif)

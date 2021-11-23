@@ -2,7 +2,7 @@
 This command lets instructors add review questions to the system. 
 
 # Location of Code
-The code that implements the above mentioned functionality is located in [cogs/reviewQs.py](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/reviewQs.py).
+The code that implements the above mentioned functionality is located in [cogs/reviewQs.py](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/reviewQs.py).
 
 # Code Description
 ## Functions

@@ -2,7 +2,7 @@
 This command lets the user set up the roles required for the grouping. This is required as a part of the group making/joining/leaving functionality.
 
 # Location of Code
-The code that implements the above-mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/groups.py).
+The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/groups.py).
 
 # Code Description
 ## Functions
