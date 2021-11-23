@@ -52,3 +52,9 @@ CREATE TABLE answers  (
     author_id       BIGINT,
     author_role     VARCHAR NOT NULL
 );
+
+CREATE TABLE project_limit (
+    guild_id        BIGINT NOT NULL,
+    author_id       BIGINT NOT NULL,
+    count           INTEGER NOT NULL
+);
