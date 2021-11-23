@@ -3,7 +3,7 @@ This command lets the user delete all group roles in the server.
 Note: This must be used in the TEST environment only!
 
 # Location of Code
-The code that implements the above-mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/groups.py).
+The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/groups.py).
 
 # Code Description
 ## Functions

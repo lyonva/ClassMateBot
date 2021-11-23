@@ -5,7 +5,7 @@ To set up and run the ClassMate Bot:
     * [pip](https://pip.pypa.io/en/stable/installation/)
 2. Clone this repo onto your local machine
     ```
-    git clone https://github.com/SE21-Team2/ClassMateBot.git
+    git clone https://github.com/lyonva/ClassMateBot.git
     cd ClassMateBot
     ```
 3. In the repository directory, run `pip install -r src/requirements.txt`

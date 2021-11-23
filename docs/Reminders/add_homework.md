@@ -2,7 +2,7 @@
 This command lets the user (either the TAs or professor) to add a homework as a reminder to the discord channel 
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/deadline.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/deadline.py).
 
 # Code Description
 ## Functions
@@ -19,4 +19,4 @@ $addhw CSC510 HW2 SEP 25 2024 17:02
 ```
 Successful execution of this command will add the reminder for the specified coursework and homework on the specified time.
 
-![$addhw CSC510 HW2 SEP 25 2024 17:02](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/addhomework.gif)
+![$addhw CSC510 HW2 SEP 25 2024 17:02](https://github.com/lyonva/ClassMateBot/blob/main/data/media/addhomework.gif)

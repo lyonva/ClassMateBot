@@ -2,7 +2,7 @@
 This command lets the user delete all the reminders irrespective of courses or homeworks. 
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/deadline.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/deadline.py).
 
 # Code Description
 ## Functions
@@ -18,4 +18,4 @@ $clearreminders
 ```
 Successful execution of this command will delete all the reminders.
 
-![$clearreminders](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/clearreminders.PNG)
+![$clearreminders](https://github.com/lyonva/ClassMateBot/blob/main/data/media/clearreminders.PNG)
