@@ -5,7 +5,7 @@ import sys
 from discord.ext import commands
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import db
+from src import db
 # -----------------------------------------------------------
 # This File contains commands for voting on projects,
 # displaying which groups have signed up for which project

@@ -7,7 +7,7 @@ from discord.ext import commands
 from discord.utils import get
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import db
+from src import db
 
 
 # -----------------------------------------------------------

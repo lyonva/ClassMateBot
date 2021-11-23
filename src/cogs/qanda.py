@@ -2,8 +2,8 @@
 # Students and instructors can choose ask and answer questions anonymously or have their names displayed
 from discord import NotFound
 from discord.ext import commands
-import db
-from utils import *
+from src import db
+from src.utils import *
 
 
 class Qanda(commands.Cog):

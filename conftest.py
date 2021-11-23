@@ -8,13 +8,13 @@ from discord.ext.commands import Bot
 from setuptools import glob
 from os.path import dirname as d
 from os.path import abspath, join
-import db
+from src import db
 
 db.TESTING_MODE = True
 
 intents = Intents.all()
 
-root_dir = d(d(abspath("test/test_bot.py")))
+root_dir = "test/test_bot.py"
 sys.path.append(root_dir)
 
 # Default parameters for the simulated dpytest bot. Loads the bot with commands from the /cogs directory
@@ -24,10 +24,10 @@ def bot(event_loop):
     bot = Bot(intents=intents, command_prefix="$", loop=event_loop)
     dir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(dir)
-    os.chdir('cogs')
+    os.chdir('src/cogs')
     for filename in os.listdir(os.getcwd()):
         if filename.endswith('.py'):
-            bot.load_extension(f"cogs.{filename[:-3]}")
+            bot.load_extension(f"src.cogs.{filename[:-3]}")
     bot.load_extension('jishaku')
     dpytest.configure(bot)
     return bot

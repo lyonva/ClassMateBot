@@ -9,8 +9,8 @@ import sys
 from discord.ext import commands
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import db
-from utils import *
+from src import db
+from src.utils import *
 
 
 class Pinning(commands.Cog):
