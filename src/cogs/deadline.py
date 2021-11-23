@@ -10,10 +10,10 @@ from datetime import datetime, timedelta
 import sys
 import discord
 from discord.ext import commands
-from utils import get_all_guild_names_by_id, is_instructor, is_dm, is_sm
+from src.utils import get_all_guild_names_by_id, is_instructor, is_dm, is_sm
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import db
+from src import db
 
 async def reminders_to_pages( reminders, guild_ids, guild_names ):
     total = len(guild_ids)
