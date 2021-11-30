@@ -21,7 +21,7 @@ class Helpful(commands.Cog):
     @commands.command()
     async def ping(self, ctx):
         # We set an upper bound on the ping of the bot to prevent float_infinity situations which crash testing
-        await ctx.send(f"Pong! My ping currently is {round(min(999999999, self.bot.latency * 1000))}ms")
+        await ctx.author.send(f"Pong! My ping currently is {round(min(999999999, self.bot.latency * 1000))}ms")
 
 
 # -------------------------------------
