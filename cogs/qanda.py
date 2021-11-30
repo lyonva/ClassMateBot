@@ -230,7 +230,7 @@ class Qanda(commands.Cog):
                         result += f"Answer: {answer_string}\n\n"
         await ctx.author.send(result)
 
-    @commands.command(name="getq", help="Sends DM of all questions and answers" "EX: $getq 1")
+    @commands.command(name="getq", help="Sends DM of requested question and answer" "EX: $getq")
     async def getQuestion(self, ctx):
         """
         Function: getq
