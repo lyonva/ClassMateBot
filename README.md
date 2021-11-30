@@ -5,11 +5,10 @@
 ![Python](https://img.shields.io/badge/python-v3.8+-yellow.svg)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5646734.svg)](https://doi.org/10.5281/zenodo.5646734)
-![Build Status](https://github.com/SE21-Team2/ClassMateBot/actions/workflows/main.yml/badge.svg)
-![GitHub issues](https://img.shields.io/github/issues/shikhanair/TeachersPetBot)
-![GitHub closed issues](https://img.shields.io/github/issues-closed/SE21-Team2/ClassMateBot)
-![Lines of code](https://img.shields.io/tokei/lines/github/SE21-Team2/ClassMateBot)
-[![codecov](https://codecov.io/gh/SE21-Team2/ClassMateBot/branch/main/graph/badge.svg)](https://codecov.io/gh/SE21-Team2/ClassMateBot)
+![Build Status](https://github.com/lyonva/ClassMateBot/actions/workflows/main.yml/badge.svg)
+![GitHub issues](https://img.shields.io/github/issues/lyonva/ClassMateBot)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/lyonva/ClassMateBot)
+[![codecov](https://codecov.io/gh/lyonva/ClassMateBot/branch/main/graph/badge.svg)](https://app.codecov.io/gh/lyonva/ClassMateBot)
 
 <p align="center">
   <a href="#dart-basic-overview">Basic Overview</a>
