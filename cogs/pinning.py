@@ -39,9 +39,9 @@ class Pinning(commands.Cog):
         Outputs: Adds pinned message to DB.
        """
 
-        if is_dm(ctx):
+        if utils.is_dm(ctx):
             author = ctx.message.author
-            result = await chooseGuild(self, ctx)
+            result = await utils.chooseGuild(self, ctx)
 
             servers = result[0]
             res = result[1]
@@ -80,10 +80,10 @@ class Pinning(commands.Cog):
         Outputs: Remove pinned message from DB.
         """
 
-        if is_dm(ctx):
+        if utils.is_dm(ctx):
             author = ctx.message.author
 
-            result = await chooseGuild(self, ctx)
+            result = await utils.chooseGuild(self, ctx)
 
             servers = result[0]
             res = result[1]
@@ -128,10 +128,10 @@ class Pinning(commands.Cog):
         - tagname: the tag used to identify which pinned messages are to be retrieved.
         Outputs: Retrieves pinned messages from DB.
         """
-        if is_dm(ctx):
+        if utils.is_dm(ctx):
             author = ctx.message.author
 
-            result = await chooseGuild(self, ctx)
+            result = await utils.chooseGuild(self, ctx)
 
             servers = result[0]
             res = result[1]
@@ -174,7 +174,7 @@ class Pinning(commands.Cog):
         - description: new description
         Outputs: Updates pinned message to DB.
         """
-        if is_dm(ctx):
+        if utils.is_dm(ctx):
             await ctx.invoke(self.bot.get_command('unpin'), tagname)
             await ctx.invoke(self.bot.get_command('pin'), tagname=tagname, description=description)
         else:

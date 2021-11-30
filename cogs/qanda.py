@@ -203,7 +203,7 @@ class Qanda(commands.Cog):
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="getQAs", help="Sends DM of all questions and answers" "EX: $getQAs")
     async def getQAs(self, ctx):
-        results = await chooseGuild(self, ctx)
+        results = await utils.chooseGuild(self, ctx)
         guild_list = results[0]
         msg = results[1]
         result = ""
@@ -242,7 +242,7 @@ class Qanda(commands.Cog):
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="getq", help="Sends DM of all questions and answers" "EX: $getq 1")
     async def getQuestion(self, ctx):
-        results = await chooseGuild(self, ctx)
+        results = await utils.chooseGuild(self, ctx)
         msg = results[1]
         guild_list = str(results[0][msg - 1])
         result = ""
@@ -322,6 +322,7 @@ class Qanda(commands.Cog):
                 await ctx.send(
                     f"Question {num} has been deleted\n"
                 )  # Tells the user a question and/or answer has been deleted
+
 
 # -----------------------------------------------------------------------------------------------------------------
 # Function: chooseNumber
