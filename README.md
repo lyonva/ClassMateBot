@@ -1,4 +1,4 @@
-<p align="center"><img width=20.5% src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/neworange.png"></p>
+<p align="center"><img width=20.5% src="https://github.com/lyonva/ClassMateBot/blob/main/data/neworange.png"></p>
 <h1 align="center" >ClassMate Bot</h1>
 
 ![Python](https://img.shields.io/badge/python-v3.8+-yellow.svg)
@@ -38,7 +38,7 @@ https://user-images.githubusercontent.com/89809302/140442405-e043564d-c946-4116-
 
 This project helps to improve the life of students, TAs and teachers by automating many mundane tasks which are sometimes done manually. ClassMateBot is a discord bot made in Python and could be used for any discord channel.
 
-This is Project 2 for the ClassMate Bot. Changes are marked below and listed in [Project 2 Changes](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Project2Changes.md).
+This is Project 2 for the ClassMate Bot. Changes are marked below and listed in [Project 2 Changes](https://github.com/lyonva/ClassMateBot/blob/main/docs/Project2Changes.md).
 
 ---
 
@@ -64,9 +64,9 @@ Voting for projects is a common occurence that many students must endure. With t
 ![image](https://user-images.githubusercontent.com/32313919/140250910-3aa8d6cd-000d-4b51-949a-0c60f3464c3b.png)
 
 
-### 3 - Deadline Reminder
-The next important thing our project covers is the Deadline reminder feature of our bot. Students may add homeworks, links, and due dates using the system, and then view their daily or weekly dues with ease. No longer will a student be vulnerable to those odd submission times like 3:00 PM. See homework specific to one class, due today, or due this week!
-![$addhw CSC510 HW2 SEP 25 2024 17:02](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/addhomework.gif)
+### 3 - Deadline Reminder **(Reworked on Project 3)**
+The next important thing our project covers is the Deadline reminder feature of our bot. Students and instructors may add homeworks, links, and due dates using the system, and then view their daily or weekly dues with ease. Even better, if you are an instructor, you can easily add reminders for all your students. No longer will a student be vulnerable to those odd submission times like 3:00 PM. See all homeworks you have due across all classes, as well as your homeworks due today or due this week!
+![$addhw CSC510 HW2 SEP 25 2024 17:02](https://github.com/lyonva/ClassMateBot/blob/main/data/media/addhomework.gif)
 
 ### 4 - Personally Pinning Messages
 Another problem that the students face is that they cannot pin important messages they want to go back to later. With pinned messages, the student can save discord message links easily to point back to prior messages or just leave their own general messages. It is a very easy system to use and could be creatively used by a student in many different ways to promote better classroom success.
@@ -98,86 +98,82 @@ An essential part of studying is going over questions related to the exam topics
 
 
 ## :arrow_down: Installation
-To install and run the ClassMate Bot, follow instructions in the [Installation Guide](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/installation.md).
+To install and run the ClassMate Bot, follow instructions in the [Installation Guide](https://github.com/lyonva/ClassMateBot/blob/main/docs/installation.md).
 
 ---
 
 ## :computer: Commands
 For the newComer.py file
 
-:open_file_folder: [$verify command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Verification/verify.md) **(Modified Command in Project 2)**
+:open_file_folder: [$verify command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Verification/verify.md) **(Modified Command in Project 2)**
 
 For the voting.py file **(All Modified Commands in Project 2)**
 
-:open_file_folder: [$projects command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Voting/projects.md) 
+:open_file_folder: [$projects command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Voting/projects.md) 
 
-:open_file_folder: [$vote command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Voting/vote.md) 
+:open_file_folder: [$vote command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Voting/vote.md) 
 
 :open_file_folder: [$setlimit command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Voting/setlimit.md)
 
-For the deadline.py file
+For the deadline.py file **(All Commands Reworked in Project 3)**
 
-:open_file_folder: [$add_homework command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/add_homework.md)
+:open_file_folder: [$reminderadd (ra) command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Reminders/reminderadd.md)
 
-:open_file_folder: [$change_reminder_due_date command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/change_reminder_due_date.md)
+:open_file_folder: [$reminderedit (re) command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Reminders/reminderedit.md)
 
-:open_file_folder: [$clear_all_reminders command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/clear_all_reminders.md)
+:open_file_folder: [$reminderdelete (rd) command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Reminders/reminderdelete.md)
 
-:open_file_folder: [$course_due command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/course_due.md)
+:open_file_folder: [$remindersclear command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Reminders/remindersclear.md)
 
-:open_file_folder: [$delete_reminder command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/delete_reminder.md)
+:open_file_folder: [$reminders command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Reminders/reminders.md)
 
-:open_file_folder: [$due_this_week command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/due_this_week.md)
+:open_file_folder: [$duetoday command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Reminders/due_today.md)
 
-:open_file_folder: [$due_today command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/due_today.md)
-
-:open_file_folder: [$list_reminders command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/list_reminders.md)
-
-:open_file_folder: [$timenow command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/timenow.md) **(New Command in Project 2)**
+:open_file_folder: [$duethisweek command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Reminders/due_this_week.md)
 
 
 For the pinning.py file **(All Modified Commands in Project 2)**
 
-:open_file_folder: [$pin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/pin.md) 
+:open_file_folder: [$pin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/pin.md) 
 
-:open_file_folder: [$unpin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/unpin.md) 
+:open_file_folder: [$unpin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/unpin.md) 
 
-:open_file_folder: [$pinnedmessages command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/pinnedmessages.md) 
+:open_file_folder: [$pinnedmessages command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/pinnedmessages.md) 
 
-:open_file_folder: [$updatepin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/updatepin.md) 
+:open_file_folder: [$updatepin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/updatepin.md) 
 
 For the groups.py file
 
-:open_file_folder: [$startupgroups command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/startupgroups.md) **(New Command in Project 2)**
+:open_file_folder: [$startupgroups command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/startupgroups.md) **(New Command in Project 2)**
 
-:open_file_folder: [$reset command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/reset.md) **(New Command in Project 2)**
+:open_file_folder: [$reset command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/reset.md) **(New Command in Project 2)**
 
-:open_file_folder: [$connect command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/connect.md) **(New Command in Project 2)**
+:open_file_folder: [$connect command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/connect.md) **(New Command in Project 2)**
 
-:open_file_folder: [$groups command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/groups.md) **(Modified Command in Project 2)**
+:open_file_folder: [$groups command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/groups.md) **(Modified Command in Project 2)**
 
-:open_file_folder: [$group command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/group.md) **(New Command in Project 2)**
+:open_file_folder: [$group command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/group.md) **(New Command in Project 2)**
 
-:open_file_folder: [$join command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/join.md) **(Modified Command in Project 2)**
+:open_file_folder: [$join command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/join.md) **(Modified Command in Project 2)**
 
-:open_file_folder: [$leave command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/leave.md) **(Modified Command in Project 2)**
+:open_file_folder: [$leave command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/leave.md) **(Modified Command in Project 2)**
 
 For the qanda.py file **(All New Commands in Project 2)**
 
-:open_file_folder: [$ask command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/QandA/ask.md) 
+:open_file_folder: [$ask command](https://github.com/lyonva/ClassMateBot/blob/main/docs/QandA/ask.md) 
 
-:open_file_folder: [$answer command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/QandA/answer.md) 
+:open_file_folder: [$answer command](https://github.com/lyonva/ClassMateBot/blob/main/docs/QandA/answer.md) 
 
 For the reviewqs.py file **(All New Commands in Project 2)**
 
-:open_file_folder: [$addQuestion command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/ReviewQs/addQuestion.md) 
+:open_file_folder: [$addQuestion command](https://github.com/lyonva/ClassMateBot/blob/main/docs/ReviewQs/addQuestion.md) 
 
-:open_file_folder: [$getQuestion command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/ReviewQs/getQuestion.md) 
+:open_file_folder: [$getQuestion command](https://github.com/lyonva/ClassMateBot/blob/main/docs/ReviewQs/getQuestion.md) 
 
 ---
 
 ## :earth_americas: Future Scope
-[Project 3](https://github.com/SE21-Team2/ClassMateBot/projects/2) suggested tasks are located in the Projects tab. 
+[Project 3](https://github.com/lyonva/ClassMateBot/projects/2) suggested tasks are located in the Projects tab. 
 
 ---
 
@@ -186,10 +182,10 @@ For the reviewqs.py file **(All New Commands in Project 2)**
 <table>
   <tr>
     <td align="center"><a href="https://github.com/TanyaChu"><img src="https://github.com/tanyachu.png" width="75px;" alt=""/><br /><sub><b>Tanya Chu</b></sub></a></td>
-    <td align="center"><a href="https://github.com/SteveJones92"><img src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/SteveJones92.png" width="75px;" alt=""/><br /><sub><b>Steven Jones</b></sub></a></td>
-    <td align="center"><a href="https://github.com/shikhanair"><img src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/shikhanair.png" width="75px;" alt=""/><br /><sub><b>Shikha Nair</b></sub></a></td>
-    <td align="center"><a href="https://github.com/alexsnezhko3"><img src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/alexsnezhko3.png" width="75px;" alt=""/><br /><sub><b>Alex Snezhko</b></sub></a></td>
-    <td align="center"><a href="https://github.com/prdhnchtn"><img src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/prdhnchtn.png" width="75px;" alt=""/><br /><sub><b>Pradhan Chetan Venkataramaiah</b></sub></a></td>
+    <td align="center"><a href="https://github.com/SteveJones92"><img src="https://github.com/lyonva/ClassMateBot/blob/main/data/media/SteveJones92.png" width="75px;" alt=""/><br /><sub><b>Steven Jones</b></sub></a></td>
+    <td align="center"><a href="https://github.com/shikhanair"><img src="https://github.com/lyonva/ClassMateBot/blob/main/data/media/shikhanair.png" width="75px;" alt=""/><br /><sub><b>Shikha Nair</b></sub></a></td>
+    <td align="center"><a href="https://github.com/alexsnezhko3"><img src="https://github.com/lyonva/ClassMateBot/blob/main/data/media/alexsnezhko3.png" width="75px;" alt=""/><br /><sub><b>Alex Snezhko</b></sub></a></td>
+    <td align="center"><a href="https://github.com/prdhnchtn"><img src="https://github.com/lyonva/ClassMateBot/blob/main/data/media/prdhnchtn.png" width="75px;" alt=""/><br /><sub><b>Pradhan Chetan Venkataramaiah</b></sub></a></td>
   </tr>
 </table>
 
