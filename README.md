@@ -1,10 +1,9 @@
 <p align="center"><img width=20.5% src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/neworange.png"></p>
 <h1 align="center" >ClassMate Bot</h1>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ![Python](https://img.shields.io/badge/python-v3.8+-yellow.svg)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5646734.svg)](https://doi.org/10.5281/zenodo.5646734)
+[![DOI](https://zenodo.org/badge/427123166.svg)](https://zenodo.org/badge/latestdoi/427123166)
 ![Build Status](https://github.com/lyonva/ClassMateBot/actions/workflows/main.yml/badge.svg)
 ![GitHub issues](https://img.shields.io/github/issues/lyonva/ClassMateBot)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed/lyonva/ClassMateBot)
