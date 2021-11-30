@@ -23,3 +23,5 @@ $deleteq 1
 ```
 
 Successful execution of this command will delete the question and accompanying answer (if applicable) from the database. An invalid question gives the user an error saying the question they are attempting to delete doesn't exist.
+
+![deleteq](data/media/deleteq.png)
