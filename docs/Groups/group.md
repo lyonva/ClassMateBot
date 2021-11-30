@@ -2,7 +2,7 @@
 This command lets the student view the names of members in their group or the names of members in a specified group. This is useful for students to contact each other and for instructors to find out the names of people in a specific group.
 
 # Location of Code
-The code that implements the above-mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/groups.py).
+The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/groups.py).
 
 # Code Description
 ## Functions

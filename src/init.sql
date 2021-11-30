@@ -1,7 +1,6 @@
 CREATE TABLE reminders (
     guild_id        BIGINT NOT NULL,
     author_id       BIGINT NOT NULL,
-    course          VARCHAR NOT NULL,
     homework        VARCHAR NOT NULL,
     due_date        TIMESTAMP WITH TIME ZONE NOT NULL
 );
@@ -52,4 +51,10 @@ CREATE TABLE answers  (
     answer          VARCHAR NOT NULL,
     author_id       BIGINT,
     author_role     VARCHAR NOT NULL
+);
+
+CREATE TABLE project_limit (
+    guild_id        BIGINT NOT NULL,
+    author_id       BIGINT NOT NULL,
+    count           INTEGER NOT NULL
 );

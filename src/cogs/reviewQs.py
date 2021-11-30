@@ -1,6 +1,6 @@
 # This functionality provides mechanism for instructors to post a random review question from the databse
 from discord.ext import commands
-import db
+from src import db
 
 class ReviewQs(commands.Cog):
 
