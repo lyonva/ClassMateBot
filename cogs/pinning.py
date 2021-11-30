@@ -134,7 +134,6 @@ class Pinning(commands.Cog):
             author = ctx.message.author
 
             result = await utils.chooseGuild(self, ctx)
-
             servers = result[0]
             res = result[1]
 
@@ -144,8 +143,8 @@ class Pinning(commands.Cog):
                     (servers[res - 1], author.id)
                 )
             else:
-                messages = db.query('SELECT tag, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s AND tag = %s',(ctx.guild.id, author.id, tagname))
-
+                messages = db.query('SELECT tag, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s AND tag = %s',(servers[res - 1], author.id, tagname))
+                
             if len(messages) == 0:
                 await ctx.author.send("No messages found with the given tagname and author combination")
             for tag, description in messages:
