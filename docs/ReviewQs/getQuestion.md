@@ -2,7 +2,7 @@
 This command lets users get a random review question added by instructors. The answer to the question will be hidden as a spoiler.
 
 # Location of Code
-The code that implements the above mentioned functionality is located in [cogs/reviewQs.py](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/reviewQs.py).
+The code that implements the above mentioned functionality is located in [cogs/reviewQs.py](https://github.com/lyonva/ClassMateBot/blob/main/cogs/reviewQs.py).
 
 # Code Description
 ## Functions

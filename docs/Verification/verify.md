@@ -2,7 +2,7 @@
 This command verifies the user by getting their full name, storing this with their username in the database, and then granting access to the guild channels
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/bot.py) and [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/newComer.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/bot.py) and [here](https://github.com/lyonva/ClassMateBot/blob/main/cogs/newComer.py).
 
 # Code Description
 ## Functions

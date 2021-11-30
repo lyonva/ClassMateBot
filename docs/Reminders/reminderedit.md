@@ -2,7 +2,7 @@
 This command lets the user update the due date for a specific homework. If used by an instructor, the new date is set for every user. Otherwise, the reminder is changed just for you.
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/deadline.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/cogs/deadline.py).
 
 # Code Description
 ## Functions

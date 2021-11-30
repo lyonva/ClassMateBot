@@ -2,7 +2,7 @@
 This command lets users answer a question in the #q-and-a channel. The answers are automatically appended to the question and the role (Instructor/Student) of the sender will be shown. The user can choose to display their name or answer the question anonymously. 
 
 # Location of Code
-The code that implements the above mentioned functionality is located in [cogs/qanda.py](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/qanda.py).
+The code that implements the above mentioned functionality is located in [cogs/qanda.py](https://github.com/lyonva/ClassMateBot/blob/main/cogs/qanda.py).
 
 # Code Description
 ## Functions
