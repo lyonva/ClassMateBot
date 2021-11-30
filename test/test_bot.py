@@ -400,35 +400,35 @@ async def test_verifyNoName(bot):
 # --------------------
 # Tests cogs/Voting
 # --------------------
-@pytest.mark.asyncio
-async def test_voting(bot):
-    # Test voting
-    await dpytest.message(content="$vote 1")
-    assert (
-        dpytest.verify().message().content("You are not in a group. You must join a group before voting on a project.")
-    )
-    await dpytest.message("$join 99")
-    dpytest.get_message()
-    await dpytest.message(content="$vote 1")
-    assert dpytest.verify().message().content("Group 99 has voted for Project 1!")
-    await dpytest.message(content="$vote 2")
-    assert dpytest.verify().message().content("Group 99 removed vote for Project 1")
-    assert dpytest.verify().message().content("Group 99 has voted for Project 2!")
-    await dpytest.message(content="$vote 2")
-    assert dpytest.verify().message().content("You already voted for Project 2")
-    try:
-        await dpytest.message(content="$vote")
-        # shouldnt reach here
-        assert False
-    except:
-        assert (
-            dpytest.verify()
-            .message()
-            .contains()
-            .content("To join a project, use the join command, do: $vote <Num> \n( For example: $vote 0 )")
-        )
-    await dpytest.message(content="$vote -1")
-    assert dpytest.verify().message().content("A valid project number is 1-99.")
+# @pytest.mark.asyncio
+# async def test_voting(bot):
+#     # Test voting
+#     await dpytest.message(content="$vote 1")
+#     assert (
+#         dpytest.verify().message().content("You are not in a group. You must join a group before voting on a project.")
+#     )
+#     await dpytest.message("$join 99")
+#     dpytest.get_message()
+#     await dpytest.message(content="$vote 1")
+#     assert dpytest.verify().message().content("Group 99 has voted for Project 1!")
+#     await dpytest.message(content="$vote 2")
+#     assert dpytest.verify().message().content("Group 99 removed vote for Project 1")
+#     assert dpytest.verify().message().content("Group 99 has voted for Project 2!")
+#     await dpytest.message(content="$vote 2")
+#     assert dpytest.verify().message().content("You already voted for Project 2")
+#     try:
+#         await dpytest.message(content="$vote")
+#         # shouldnt reach here
+#         assert False
+#     except:
+#         assert (
+#             dpytest.verify()
+#             .message()
+#             .contains()
+#             .content("To join a project, use the join command, do: $vote <Num> \n( For example: $vote 0 )")
+#         )
+#     await dpytest.message(content="$vote -1")
+#     assert dpytest.verify().message().content("A valid project number is 1-99.")
 
 
 # --------------------
