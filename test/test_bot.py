@@ -2,6 +2,7 @@
 import discord
 import os
 from datetime import datetime, timedelta
+from discord import channel
 import discord.ext.test as dpytest
 from dotenv import load_dotenv
 import pytest
@@ -77,6 +78,85 @@ async def test_groupError(bot):
 # -----------------------
 # Tests cogs/deadline.py
 # -----------------------
+
+NO_REMINDER_TEXT = "Congratulations! You have no upcoming reminders."
+ONLY_DM_TEXT = "That command is DM only. Try DMing me."
+ONLY_SERVER_TEXT = "This command can only be used inside a server."
+
+@pytest.mark.asyncio
+async def test_emptyreminders(bot):
+    # Test all reminder read commands when we have no reminders
+    await dpytest.message("$ping")
+    dm_channel = dpytest.get_message().channel
+    await dpytest.message("$duetoday", channel = dm_channel)
+    assert dpytest.get_message().content == NO_REMINDER_TEXT
+    await dpytest.message("$duethisweek", channel = dm_channel)
+    assert dpytest.get_message().content == NO_REMINDER_TEXT
+    await dpytest.message("$reminders", channel = dm_channel)
+    assert dpytest.get_message().content == NO_REMINDER_TEXT
+
+@pytest.mark.asyncio
+async def test_reminder_clear_server(bot):
+    # Test that reminder clear works for our server
+    await dpytest.message("$ping")
+    dm_channel = dpytest.get_message().channel
+    
+    # Add something and check its added
+    await dpytest.message("$ra Birthday NOV 30 2021 10:00")
+    dpytest.get_message() # Discard added message
+    await dpytest.message("$reminders", channel = dm_channel)
+    assert dpytest.get_message().content != NO_REMINDER_TEXT
+    
+    # Clear all
+    await dpytest.message("$rc")
+    assert dpytest.get_message().content == "All your reminders from this server have been cleared."
+    
+    # # Check we have nothing due
+    await dpytest.message("$reminders", channel = dm_channel)
+    assert dpytest.get_message().content == NO_REMINDER_TEXT
+
+@pytest.mark.asyncio
+async def test_reminder_clear_dm(bot):
+    # Test that reminder clear works for our server
+    await dpytest.message("$ping")
+    dm_channel = dpytest.get_message().channel
+    
+    # Add something and check its added
+    await dpytest.message("$ra Birthday NOV 30 2021 10:00")
+    dpytest.get_message() # Discard added message
+    await dpytest.message("$reminders", channel = dm_channel)
+    assert dpytest.get_message().content != NO_REMINDER_TEXT
+    
+    # Clear all
+    await dpytest.message("$rc", channel = dm_channel)
+    assert dpytest.get_message().content == "All your reminders have been cleared."
+    
+    # # Check we have nothing due
+    await dpytest.message("$reminders", channel = dm_channel)
+    assert dpytest.get_message().content == NO_REMINDER_TEXT
+
+@pytest.mark.asyncio
+async def test_reminder_dmonlycommands(bot):
+    # Test that check reminder commands can only be used as DMs
+    await dpytest.message("$duetoday")
+    assert dpytest.get_message().content == ONLY_DM_TEXT
+    await dpytest.message("$duethisweek")
+    assert dpytest.get_message().content == ONLY_DM_TEXT
+    await dpytest.message("$reminders")
+    assert dpytest.get_message().content == ONLY_DM_TEXT
+
+@pytest.mark.asyncio
+async def test_reminder_serveronlycommands(bot):
+    # Test that reminder add/edit/delete commands are server only
+    await dpytest.message("$ping")
+    dm_channel = dpytest.get_message().channel
+    await dpytest.message("$ra Birthday NOV 30 2021 10:00", channel = dm_channel)
+    assert dpytest.get_message().content == ONLY_SERVER_TEXT
+    await dpytest.message("$re Birthday NOV 30 2021 10:00", channel = dm_channel)
+    assert dpytest.get_message().content == ONLY_SERVER_TEXT
+    await dpytest.message("$rd Birthday", channel = dm_channel)
+    assert dpytest.get_message().content == ONLY_SERVER_TEXT
+
 @pytest.mark.asyncio
 async def test_deadline(bot):
     # Clear our reminders: Only if testing fails and leaves a reminders.JSON file with values behind
