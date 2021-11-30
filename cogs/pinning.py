@@ -54,6 +54,7 @@ class Pinning(commands.Cog):
             await ctx.author.send(
                 f"A new message has been pinned with tag: {tagname} and description: {description}")
         else:
+            await ctx.message.delete()
             await ctx.author.send("$pin command is DM only. Try sending it as a DM!")
 
     @addMessage.error
@@ -105,6 +106,7 @@ class Pinning(commands.Cog):
                 await ctx.author.send(
                     f"{len(rows_deleted)} pinned message(s) has been deleted with tag: {tagname}.")
         else:
+            await ctx.message.delete()
             await ctx.author.send('$unpin is a DM only command. Try sending it as a DM!')
 
     @deleteMessage.error
@@ -149,6 +151,7 @@ class Pinning(commands.Cog):
             for tag, description in messages:
                 await ctx.author.send(f"Tag: {tag}, Description: {description}")
         else:
+            await ctx.message.delete()
             await ctx.author.send("$pinnedmessages is a DM only command! Try sending a DM")
 
 
@@ -178,6 +181,7 @@ class Pinning(commands.Cog):
             await ctx.invoke(self.bot.get_command('unpin'), tagname)
             await ctx.invoke(self.bot.get_command('pin'), tagname=tagname, description=description)
         else:
+            await ctx.message.delete()
             await ctx.author.send("$updatepin is a DM only command! Try sending a DM")
 
     @updatePinnedMessage.error

@@ -111,7 +111,7 @@ class Groups(commands.Cog):
     ( For example: $join 0 )', pass_context=True)
     async def join(self, ctx, group_num: int):
         # get the name of the caller
-        member_name = ctx.message.author.display_name.upper()
+        member_name = ctx.message.author.name
         member = ctx.message.author
 
         if group_num < 0 or group_num > 99:
@@ -173,7 +173,7 @@ class Groups(commands.Cog):
     ( For example: $leave )', pass_context=True)
     async def leave(self, ctx):
         # get the name of the caller
-        member_name = ctx.message.author.display_name.upper()
+        member_name = ctx.message.author.name
         member = ctx.message.author
 
         current_group_num = db.query(
@@ -241,7 +241,7 @@ class Groups(commands.Cog):
     async def group(self, ctx, group_num: int = -1):
 
         if group_num == -1:
-            member_name = ctx.message.author.display_name.upper()
+            member_name = ctx.message.author.name
 
             group_num = db.query(
                 'SELECT group_num FROM group_members WHERE guild_id = %s and member_name = %s',
@@ -276,6 +276,201 @@ class Groups(commands.Cog):
 
         # print the embedded objects
         await ctx.send(embed=embed)
+
+        
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: autogroup(self, ctx)
+    #    Description: autogroups all the members into groups
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: Places all the members into a group
+    # -------------------------------------------------------------------------------------------------------
+
+    @commands.command(name='autogroup', help='autogroups members', pass_context=True)
+
+    async def autogroup(self, ctx):
+
+        # Pulling the list of all members in the server
+        list_member = db.query(
+            'SELECT real_name FROM name_mapping WHERE guild_id = %s',
+            (ctx.guild.id,)
+        )
+        temp =[]
+        for x in list_member:
+            temp.append(x[0])
+        
+        list_member = temp
+        
+
+        
+        # 
+        # #total_members= len(list_member)
+        # #total_groups= math.ceil(total_members / members_per_group)
+
+        #  Pulling the list of existing groups
+        group2 = db.query(
+            'SELECT group_num, array_agg(member_name) '
+            'FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
+            (ctx.guild.id,)
+        )
+
+
+        # Deletes the existing groups from database
+       
+        group1=[]
+        for group_num, members in group2:
+            group1.append(members)
+            for x in members:
+                db.query(
+                'DELETE FROM group_members WHERE guild_id = %s AND member_name = %s',
+                (ctx.guild.id, x)
+                 )
+               
+
+        
+        #group1=[['u1','u2', 'u3'], ['u4'], ['u6'], ['u5']]
+        #list_member = ['u1','u2', 'u3', 'u4', 'u5', 'u6']
+        members_per_group= 6
+        check_size = 1
+        flag = 1
+        
+        while flag == 1:
+            
+            existing_groups = []          
+            new_group_number=0
+            for members in group1:            
+                if len(members) > check_size:
+                    new_group_number= new_group_number + 1
+                    existing_groups.append(([new_group_number],members))
+                    for x in members:
+                        if x in list_member:
+                            list_member.remove(x)
+                                
+
+ 
+
+            final_groups=[]
+            for group_num, members in existing_groups:            
+                while len(members) < members_per_group and len(list_member) > 0 :
+                    members.append(list_member.pop(0))
+                final_groups.append(members)
+
+            while len(list_member) > 0:
+                members=[]
+                while len(members) < members_per_group and len(list_member) > 0 :
+                    members.append(list_member.pop(0))
+                final_groups.append(members)
+
+            count=0
+            temp_list=[]
+            group1=[]
+            for groups in final_groups:
+                if len(groups) < members_per_group:
+                    count+=1
+                    for members in groups:
+                        temp_list.append(members)
+                else:
+                    group1.append(groups)
+            
+
+            if count > 1:
+                list_member= temp_list
+                check_size+=1
+            else:
+                flag = 0
+                print (final_groups)
+
+
+# Adding final group list to database
+
+        final_group_number= 0 
+        for x in final_groups:
+            final_group_number+=1
+            #await ctx.send(f'group {final_group_number} - members:{x}' )
+            for membername in x:
+                
+                #print (membername, final_group_number)
+                db.query(
+                    'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
+                    (ctx.guild.id, final_group_number, membername)
+                    )
+              
+
+        await ctx.send('All the members are mapped to their new groups through autogroup. Please use command $autojoin to connect with your new group members.')
+
+#remove all previously assigned group channel
+        for i in range(100):
+            group_name = "group-" + str(i)
+            existing_channel = get(ctx.guild.text_channels, name=group_name)
+            if existing_channel is not None:
+                await existing_channel.delete()
+ #               print (' channel removed' )
+#                print (existing_channel)
+
+
+
+# -------------------------------------------------------------------------------------------------------
+    #    Function: autojoin(self, ctx)
+    #    Description: autojoin assigns their group role in discord and addeds the member in their group text channel
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: Places all the members in their group role in discord and addeds the member in their group text channel
+#----------------------------------------------------------------
+    @commands.command(name='autojoin', help='autojoin', pass_context=True)
+
+    async def autojoin(self, ctx):
+        member_name = ctx.message.author.name
+        member = ctx.message.author
+
+        current_group_num = db.query(
+            'SELECT group_num FROM group_members WHERE guild_id = %s AND member_name = %s',
+            (ctx.guild.id, member_name)
+        )
+       # print(current_group_num)
+
+        
+# Removes members from their existing group channel 
+        for i in range(100):
+            identifier = "group_" + str(i)
+            role = get(ctx.guild.roles, name=identifier)
+            if role is not None:
+                await member.remove_roles(role)
+               # print (' role removed' )
+                #print (role)
+        await ctx.send('You have been added to your new group')   
+        #print('You have been added to your new group')
+        if current_group_num:
+
+            identifier = "group_" + str(current_group_num[0][0])
+            role = get(ctx.guild.roles, name=identifier)
+
+            if role is None:
+                await ctx.guild.create_role(name=identifier)
+                role = get(ctx.guild.roles, name=identifier)
+
+            await member.add_roles(role)
+            #print('role added')
+            #print(role)
+            role_string = "group_" + str(current_group_num[0][0])
+            user_role = get(ctx.guild.roles, name=role_string)
+
+            overwrites = {
+                ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                ctx.author: discord.PermissionOverwrite(read_messages=True),
+                user_role: discord.PermissionOverwrite(read_messages=True)
+            }
+            group_channel_name = "group-" + str(current_group_num[0][0])
+            existing_channel = get(ctx.guild.text_channels, name=group_channel_name)
+            if existing_channel is None:
+                await ctx.guild.create_text_channel(group_channel_name, overwrites=overwrites)
+
+        
+        
+
+
+
 
     # -----------------------------------------------------------
     # This is a testing arg, not really used for anything else but adding to the csv file

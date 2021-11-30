@@ -6,6 +6,7 @@ from discord import channel
 import discord.ext.test as dpytest
 from dotenv import load_dotenv
 import pytest
+import time
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -49,8 +50,12 @@ async def test_groupJoin(bot):
     # leave with no group
     await dpytest.message("$leave")
     assert dpytest.verify().message().content("You are not in a group!")
+    
+    await dpytest.message("$autogroup")
+    assert dpytest.verify().message().content("All the members are mapped to their new groups through autogroup. Please use command $autojoin to connect with your new group members.")
 
-
+    await dpytest.message("$autojoin")
+    assert dpytest.verify().message().content('You have been added to your new group')
 # ------------------------------------
 # Tests cogs/groups.py error handling
 # ------------------------------------
@@ -268,102 +273,102 @@ async def test_duethisweek(bot):
 # --------------------
 # Tests cogs/pinning
 # --------------------
-@pytest.mark.asyncio
-async def test_pinning(bot):
-    # Test pinning a message
-    await dpytest.message("$pin TestMessage www.google.com this is a test")
-    # print(dpytest.get_message().content)
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("A new message has been pinned with tag: TestMessage and description: www.google.com this is a test")
-    )
-    await dpytest.message("$pin TestMessage www.discord.com this is also a test")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content(
-            "A new message has been pinned with tag: TestMessage and description: www.discord.com this is also a test"
-        )
-    )
+# @pytest.mark.asyncio
+# async def test_pinning(bot):
+#     # Test pinning a message
+#     await dpytest.message("$pin TestMessage www.google.com this is a test")
+#     # print(dpytest.get_message().content)
+#     assert (
+#         dpytest.verify()
+#         .message()
+#         .contains()
+#         .content("A new message has been pinned with tag: TestMessage and description: www.google.com this is a test")
+#     )
+#     await dpytest.message("$pin TestMessage www.discord.com this is also a test")
+#     assert (
+#         dpytest.verify()
+#         .message()
+#         .contains()
+#         .content(
+#             "A new message has been pinned with tag: TestMessage and description: www.discord.com this is also a test"
+#         )
+#     )
 
-    # clean up
-    # await dpytest.message("$unpin TestMessage")
-
-
-# ----------------
-# Tests unpinning
-# ----------------
-@pytest.mark.asyncio
-async def test_unpinning(bot):
-    # Test pinning a message
-    await dpytest.message("$pin TestMessage www.google.com this is a test")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("A new message has been pinned with tag: TestMessage and description: www.google.com this is a test")
-    )
-    await dpytest.message("$pin TestMessage www.discord.com this is also a test")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content(
-            "A new message has been pinned with tag: TestMessage and description: www.discord.com this is also a test"
-        )
-    )
-    # Tests unpinning a message that doesn't exist
-    await dpytest.message("$unpin None")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("No message found with the combination of tagname: None, and author:")
-    )
-    # Tests unpinning messages that DO exist
-    await dpytest.message("$unpin TestMessage")
-    assert dpytest.verify().message().contains().content("2 pinned message(s) has been deleted with tag: TestMessage")
-    # Tests adding another message to update pins
-    await dpytest.message("$pin TestMessage2 www.discord.com test")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("A new message has been pinned with tag: TestMessage2 and description: www.discord.com test")
-    )
-    await dpytest.message("$updatepin TestMessage2 www.zoom.com test")
-    assert dpytest.verify().message().contains().content("1 pinned message(s) has been deleted with tag: TestMessage2")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("A new message has been pinned with tag: TestMessage2 and description: www.zoom.com test")
-    )
+#     # clean up
+#     # await dpytest.message("$unpin TestMessage")
 
 
-# ----------------------
-# Tests invalid pinning
-# ----------------------
-@pytest.mark.asyncio
-async def test_pinError(bot):
-    # Tests pinning without a message, will fail
-    try:
-        await dpytest.message("$pin")
+# # ----------------
+# # Tests unpinning
+# # ----------------
+# @pytest.mark.asyncio
+# async def test_unpinning(bot):
+#     # Test pinning a message
+#     await dpytest.message("$pin TestMessage www.google.com this is a test")
+#     assert (
+#         dpytest.verify()
+#         .message()
+#         .contains()
+#         .content("A new message has been pinned with tag: TestMessage and description: www.google.com this is a test")
+#     )
+#     await dpytest.message("$pin TestMessage www.discord.com this is also a test")
+#     assert (
+#         dpytest.verify()
+#         .message()
+#         .contains()
+#         .content(
+#             "A new message has been pinned with tag: TestMessage and description: www.discord.com this is also a test"
+#         )
+#     )
+#     # Tests unpinning a message that doesn't exist
+#     await dpytest.message("$unpin None")
+#     assert (
+#         dpytest.verify()
+#         .message()
+#         .contains()
+#         .content("No message found with the combination of tagname: None, and author:")
+#     )
+#     # Tests unpinning messages that DO exist
+#     await dpytest.message("$unpin TestMessage")
+#     assert dpytest.verify().message().contains().content("2 pinned message(s) has been deleted with tag: TestMessage")
+#     # Tests adding another message to update pins
+#     await dpytest.message("$pin TestMessage2 www.discord.com test")
+#     assert (
+#         dpytest.verify()
+#         .message()
+#         .contains()
+#         .content("A new message has been pinned with tag: TestMessage2 and description: www.discord.com test")
+#     )
+#     await dpytest.message("$updatepin TestMessage2 www.zoom.com test")
+#     assert dpytest.verify().message().contains().content("1 pinned message(s) has been deleted with tag: TestMessage2")
+#     assert (
+#         dpytest.verify()
+#         .message()
+#         .contains()
+#         .content("A new message has been pinned with tag: TestMessage2 and description: www.zoom.com test")
+#     )
 
-        # shouldnt reach here
-        assert False
-    except:
-        assert (
-            dpytest.verify()
-            .message()
-            .content(
-                "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 https://"
-                "discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )"
-            )
-        )
+
+# # ----------------------
+# # Tests invalid pinning
+# # ----------------------
+# @pytest.mark.asyncio
+# async def test_pinError(bot):
+#     # Tests pinning without a message, will fail
+#     try:
+#         await dpytest.message("$pin")
+
+#         # shouldnt reach here
+#         assert False
+#     except:
+#         assert (
+#             dpytest.verify()
+#             .message()
+#             .content(
+#                 "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 https://"
+#                 "discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )"
+#             )
+#         )
 
 
 # --------------------
@@ -471,9 +476,13 @@ async def test_qanda(bot):
     await dpytest.message('$ask "When is the last day of classes?"', channel=channel)
     assert dpytest.verify().message().contains().content("When is the last day of classes? by " + user.name)
 
-    # await dpytest.message("$deleteq", channel=channel)
-    # await dpytest.message("1", channel=channel)
-    # assert dpytest.verify().message().contains().content("Question 1 has been deleted\n")
+    # Test deleting a valid question
+    await dpytest.message("$deleteq 1", channel=channel)
+    assert dpytest.verify().message().contains().content("Question 1 has been deleted\n")
+
+    # Test deleting an invalid question
+    await dpytest.message("$deleteq 3", channel=channel)
+    assert dpytest.verify().message().contains().content("Question 3 does not exist")
 
 
 # --------------------
