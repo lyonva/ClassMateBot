@@ -17,4 +17,4 @@ $autogroup
 ```
 Successful execution of this command will place all the users in the server to a group automatically.
 
-![image](C:\Users\ashwi\OneDrive\Documents\SE Project\branch\ClassMateBot\data\media\autogroup.png)
+![image](/data/media/autogroup.png)

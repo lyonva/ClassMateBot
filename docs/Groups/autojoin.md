@@ -17,4 +17,4 @@ $autojoin
 ```
 Successful execution of this command will assign the user to their new group role in discord and adds the member in their group text channel.
 
-![image](https://user-images.githubusercontent.com/89809302/140448623-d3cb5658-b3cc-4ffa-a984-679fc20fbc9f.png)
+![image](/data/media/autojoin.png)
