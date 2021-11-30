@@ -2,8 +2,8 @@
 # Students and instructors can choose ask and answer questions anonymously or have their names displayed
 from discord import NotFound
 from discord.ext import commands
-from src import db
-from src.utils import *
+import db
+import utils
 
 
 class Qanda(commands.Cog):
@@ -203,7 +203,7 @@ class Qanda(commands.Cog):
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="getQAs", help="Sends DM of all questions and answers" "EX: $getQAs")
     async def getQAs(self, ctx):
-        results = await chooseGuild(self, ctx)
+        results = await utils.chooseGuild(self, ctx)
         guild_list = results[0]
         msg = results[1]
         result = ""
@@ -242,7 +242,7 @@ class Qanda(commands.Cog):
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="getq", help="Sends DM of all questions and answers" "EX: $getq 1")
     async def getQuestion(self, ctx):
-        results = await chooseGuild(self, ctx)
+        results = await utils.chooseGuild(self, ctx)
         msg = results[1]
         guild_list = str(results[0][msg - 1])
         result = ""
@@ -323,59 +323,60 @@ class Qanda(commands.Cog):
                     f"Question {num} has been deleted\n"
                 )  # Tells the user a question and/or answer has been deleted
 
-    # -----------------------------------------------------------------------------------------------------------------
-    # Function: chooseNumber
-    # Description: asks for user input to enter a number which is used by various other functionalities
-    # Inputs:
-    #      - ctx: context of the command
-    # Outputs:
-    #      - msg_int: int representation of the number the user entered
-    # -----------------------------------------------------------------------------------------------------------------
-    async def chooseNumber(self, ctx):
+
+# -----------------------------------------------------------------------------------------------------------------
+# Function: chooseNumber
+# Description: asks for user input to enter a number which is used by various other functionalities
+# Inputs:
+#      - ctx: context of the command
+# Outputs:
+#      - msg_int: int representation of the number the user entered
+# -----------------------------------------------------------------------------------------------------------------
+async def chooseNumber(self, ctx):
+    msg = ""
+    msg_int = 0
+
+    def check(m):
+        return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
+
+    valid_answer = False
+    msg_array = []
+    while valid_answer == False:
         msg = ""
-        msg_int = 0
-
-        def check(m):
-            return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
-
-        valid_answer = False
-        msg_array = []
-        while valid_answer == False:
-            msg = ""
+        if ctx.guild == None:
+            await ctx.author.send("Please enter a question number: \n")
+        else:
+            first = await ctx.send("Please enter a question number: \n")
+            msg_array.append(first.id)
+        msg = await self.bot.wait_for("message", check=check)
+        msg_array.append(msg.id)
+        try:
+            msg_int = int(msg.content)
+            valid_answer = True
+        except Exception as e:
+            print(e)
             if ctx.guild == None:
-                await ctx.author.send("Please enter a question number: \n")
+                await ctx.author.send(
+                    "You have entered an invalid option\n" + "Please make sure you are entering an integer"
+                )
             else:
-                first = await ctx.send("Please enter a question number: \n")
-                msg_array.append(first.id)
-            msg = await self.bot.wait_for("message", check=check)
-            msg_array.append(msg.id)
-            try:
-                msg_int = int(msg.content)
-                valid_answer = True
-            except Exception as e:
-                print(e)
-                if ctx.guild == None:
-                    await ctx.author.send(
-                        "You have entered an invalid option\n" + "Please make sure you are entering an integer"
-                    )
-                else:
-                    second = await ctx.send(
-                        "You have entered an invalid option\n" + "Please make sure you are entering an integer"
-                    )
-                    array_count = 0
-                    for id in msg_array:
-                        to_delete = await ctx.fetch_message(str(id))
-                        await to_delete.delete()
-                        array_count += 1
-                    current_count = 0
-                    while current_count < array_count:
-                        msg_array.pop(0)
-                        current_count += 1
-                    msg_array.append(second.id)
-        for id in msg_array:
-            to_delete = await ctx.fetch_message(str(id))
-            await to_delete.delete()
-        return msg_int
+                second = await ctx.send(
+                    "You have entered an invalid option\n" + "Please make sure you are entering an integer"
+                )
+                array_count = 0
+                for id in msg_array:
+                    to_delete = await ctx.fetch_message(str(id))
+                    await to_delete.delete()
+                    array_count += 1
+                current_count = 0
+                while current_count < array_count:
+                    msg_array.pop(0)
+                    current_count += 1
+                msg_array.append(second.id)
+    for id in msg_array:
+        to_delete = await ctx.fetch_message(str(id))
+        await to_delete.delete()
+    return msg_int
 
 
 def setup(bot):

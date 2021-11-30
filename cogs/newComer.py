@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src import db
+import db
 
 
 # ---------------------------------------------------------------------------------------

@@ -5,7 +5,7 @@ import sys
 from discord.ext import commands
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src import db
+import db
 # -----------------------------------------------------------
 # This File contains commands for voting on projects,
 # displaying which groups have signed up for which project
@@ -49,11 +49,11 @@ class Voting(commands.Cog):
             if group[0] == project_num:
                 flag = True
                 break
-        
+
         if not flag:
             await ctx.send("The entered Project Group does not exist. Please vote for a existing group only.")
             return
-    
+
         group = db.query(
             'SELECT group_num FROM group_members WHERE guild_id = %s AND member_name = %s',
             (ctx.guild.id, member_name)
@@ -151,13 +151,13 @@ class Voting(commands.Cog):
         else:
             await ctx.send('There are currently no votes for any project numbers.')
 
-    
+
     '''@commands.command(name='delete', help='print projects with groups assigned to them', pass_context=True)
     # @commands.dm_only()
     async def delete(self, ctx):
         projects = db.query(
             'DELETE FROM project_limit',
-            (ctx.guild.id, ctx.author.id) 
+            (ctx.guild.id, ctx.author.id)
         )
         await ctx.send('Deleted successfully.')
 
@@ -199,7 +199,7 @@ class Voting(commands.Cog):
         if author != guild.owner:
             await ctx.send("Only the instructor can use this command.")
             return
-        
+
         if count < 0 or count > 40:
             await ctx.send("A valid project limit is 1-40.")
             return

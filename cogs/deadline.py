@@ -10,10 +10,10 @@ from datetime import datetime, timedelta
 import sys
 import discord
 from discord.ext import commands
-from src.utils import get_all_guild_names_by_id, is_instructor, is_dm, is_sm
+from utils import get_all_guild_names_by_id, is_instructor, is_dm, is_sm
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src import db
+import db
 
 async def reminders_to_pages( reminders, guild_ids, guild_names ):
     total = len(guild_ids)
@@ -26,13 +26,13 @@ async def reminders_to_pages( reminders, guild_ids, guild_names ):
                 description += f"{homework} is due {due_date}\n"
         if description == "":
             description = "Good news: no assignments due!"
-        new_page = discord.Embed( 
+        new_page = discord.Embed(
             title = title,
             description = description,
             coluor = discord.Colour.orange(),
         )
         pages.append(new_page)
-    
+
     return pages
 
 async def send_manage_pages(ctx, pages):
@@ -40,13 +40,13 @@ async def send_manage_pages(ctx, pages):
         message = await ctx.send(embed = pages[0])
         await message.add_reaction('◀')
         await message.add_reaction('▶')
-        
+
         def check(reaction, user):
             return user == ctx.author
 
         i = 0
         reaction = None
-        
+
         while True:
             if str(reaction) == '◀':
                 i -= 1
@@ -56,7 +56,7 @@ async def send_manage_pages(ctx, pages):
                 i += 1
                 i %= len(pages)
                 await message.edit(embed = pages[i])
-            
+
             try:
                 reaction, user = await ctx.bot.wait_for('reaction_add', timeout = 30.0, check = check)
             except Exception as e:
@@ -115,7 +115,7 @@ class Deadline(commands.Cog):
         if is_sm(ctx):
             author = ctx.message.author
             await ctx.message.delete()
-            
+
             try:
                 duedate = datetime.strptime(date, '%b %d %Y %H:%M')
                 # print(seconds)
@@ -174,7 +174,7 @@ class Deadline(commands.Cog):
                 returns a success message indicating that the reminder has been deleted
         """
         await ctx.message.delete()
-        
+
         if is_sm(ctx):
             if is_instructor( ctx ):
                 reminders_deleted = db.query(
@@ -237,7 +237,7 @@ class Deadline(commands.Cog):
                     await ctx.author.send("Due date could not be parsed")
                     return
 
-            
+
             if is_instructor( ctx ):
                 updated_reminders = db.query(
                     'SELECT due_date FROM reminders WHERE guild_id = %s AND homework = %s',
@@ -256,7 +256,7 @@ class Deadline(commands.Cog):
                     'UPDATE reminders SET due_date = %s WHERE guild_id = %s AND homework = %s AND author_id = %s',
                     (duedate, ctx.guild.id, hwid, ctx.author.id)
                 )
-            
+
             if len(updated_reminders) > 0:
                 await ctx.author.send(f"{hwid} has been updated with following date: {duedate}")
             else:
@@ -271,7 +271,7 @@ class Deadline(commands.Cog):
                 'To use the reminderedit command, do: $reminderedit HW_NAME MMM DD YYYY optional(HH:MM) \n'
                 ' ( For example: $reminderedit HW2 SEP 25 2024 17:02 )')
         print(error)
-    
+
     @commands.command(name="duethisweek", pass_context=True, aliases = ["dw"],
                       help="check all the homeworks that are due this week.")
     async def duethisweek(self, ctx):
@@ -325,7 +325,7 @@ class Deadline(commands.Cog):
         else:
             await ctx.message.delete()
             await ctx.author.send( "That command is DM only. Try DMing me." )
-    
+
 
     @commands.command(name="reminders", pass_context=True, aliases = ["r"],
                       help="Lists all reminders.")
@@ -352,8 +352,8 @@ class Deadline(commands.Cog):
         else:
             await ctx.message.delete()
             await ctx.author.send( "That command is DM only. Try DMing me." )
-    
-    
+
+
     @commands.command(name="remindersclear", pass_context=True, aliases = ["rc"],
                       help="Deletes all reminders.")
     async def remindersclear(self, ctx):
