@@ -23,4 +23,4 @@ $getq"
 
 Successful execution of this command will display the requested question and answer (where applicable) for the requested server. If a server or question is requested that doesn't exist, the bot returns a message saying the user has selected an invalid option.
 
-![getq](data/media/getq.png)
+![getq](../../data/media/getq.png)

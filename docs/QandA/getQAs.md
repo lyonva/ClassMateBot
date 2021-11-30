@@ -23,4 +23,4 @@ $getQAs
 
 Successful execution of this command will display all the questions and answers (where applicable) for the requested server. If a server is requested that doesn't exist, the bot returns a message saying the user has selected an invalid option.
 
-![getQAs](data/media/getqas.png)
+![getQAs](../../data/media/getqas.png)
