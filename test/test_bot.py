@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import discord.ext.test as dpytest
 from dotenv import load_dotenv
 import pytest
+import time
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -391,9 +392,13 @@ async def test_qanda(bot):
     await dpytest.message('$ask "When is the last day of classes?"', channel=channel)
     assert dpytest.verify().message().contains().content("When is the last day of classes? by " + user.name)
 
-    # await dpytest.message("$deleteq", channel=channel)
-    # await dpytest.message("1", channel=channel)
-    # assert dpytest.verify().message().contains().content("Question 1 has been deleted\n")
+    # Test deleting a valid question
+    await dpytest.message("$deleteq 1", channel=channel)
+    assert dpytest.verify().message().contains().content("Question 1 has been deleted\n")
+
+    # Test deleting an invalid question
+    await dpytest.message("$deleteq 3", channel=channel)
+    assert dpytest.verify().message().contains().content("Question 3 does not exist")
 
 
 # --------------------
