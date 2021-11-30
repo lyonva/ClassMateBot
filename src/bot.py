@@ -105,7 +105,7 @@ async def on_ready():
     # print(f"Guild Members:\n - {members}")
     # db.connect()
     
-    for filename in os.listdir("./cogs"):
+    for filename in os.listdir("./src/cogs"):
         if filename.endswith(".py"):
             bot.load_extension(f"cogs.{filename[:-3]}")
     bot.load_extension("jishaku")
