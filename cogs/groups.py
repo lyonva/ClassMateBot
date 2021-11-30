@@ -331,7 +331,7 @@ class Groups(commands.Cog):
         
         #group1=[['u1','u2', 'u3'], ['u4'], ['u6'], ['u5']]
         #list_member = ['u1','u2', 'u3', 'u4', 'u5', 'u6']
-        members_per_group= 3
+        members_per_group= 6
         check_size = 1
         flag = 1
         
@@ -387,7 +387,7 @@ class Groups(commands.Cog):
         final_group_number= 0 
         for x in final_groups:
             final_group_number+=1
-            await ctx.send(f'group {final_group_number} - members:{x}' )
+            #await ctx.send(f'group {final_group_number} - members:{x}' )
             for membername in x:
                 
                 #print (membername, final_group_number)
@@ -439,8 +439,8 @@ class Groups(commands.Cog):
                 await member.remove_roles(role)
                # print (' role removed' )
                 #print (role)
-            
-
+        await ctx.send('You have been added to your new group')   
+        #print('You have been added to your new group')
         if current_group_num:
 
             identifier = "group_" + str(current_group_num[0][0])
@@ -466,7 +466,7 @@ class Groups(commands.Cog):
             if existing_channel is None:
                 await ctx.guild.create_text_channel(group_channel_name, overwrites=overwrites)
 
-
+        
         
 
 

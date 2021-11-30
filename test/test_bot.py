@@ -48,8 +48,12 @@ async def test_groupJoin(bot):
     # leave with no group
     await dpytest.message("$leave")
     assert dpytest.verify().message().content("You are not in a group!")
+    
+    await dpytest.message("$autogroup")
+    assert dpytest.verify().message().content("All the members are mapped to their new groups through autogroup. Please use command $autojoin to connect with your new group members.")
 
-
+    await dpytest.message("$autojoin")
+    assert dpytest.verify().message().content('You have been added to your new group')
 # ------------------------------------
 # Tests cogs/groups.py error handling
 # ------------------------------------
