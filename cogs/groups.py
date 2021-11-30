@@ -277,7 +277,6 @@ class Groups(commands.Cog):
         # print the embedded objects
         await ctx.send(embed=embed)
 
-        
     # -------------------------------------------------------------------------------------------------------
     #    Function: autogroup(self, ctx)
     #    Description: autogroups all the members into groups
@@ -299,12 +298,8 @@ class Groups(commands.Cog):
         temp =[]
         for x in list_member:
             temp.append(x[0])
-        
         list_member = temp
-        
 
-        
-        # 
         # #total_members= len(list_member)
         # #total_groups= math.ceil(total_members / members_per_group)
 
@@ -317,7 +312,7 @@ class Groups(commands.Cog):
 
 
         # Deletes the existing groups from database
-       
+
         group1=[]
         for group_num, members in group2:
             group1.append(members)
@@ -326,32 +321,28 @@ class Groups(commands.Cog):
                 'DELETE FROM group_members WHERE guild_id = %s AND member_name = %s',
                 (ctx.guild.id, x)
                  )
-               
+ 
 
-        
+
         #group1=[['u1','u2', 'u3'], ['u4'], ['u6'], ['u5']]
         #list_member = ['u1','u2', 'u3', 'u4', 'u5', 'u6']
         members_per_group= 6
         check_size = 1
         flag = 1
-        
+
         while flag == 1:
-            
-            existing_groups = []          
+            existing_groups = []
             new_group_number=0
-            for members in group1:            
+            for members in group1:
                 if len(members) > check_size:
                     new_group_number= new_group_number + 1
                     existing_groups.append(([new_group_number],members))
                     for x in members:
                         if x in list_member:
                             list_member.remove(x)
-                                
-
- 
 
             final_groups=[]
-            for group_num, members in existing_groups:            
+            for group_num, members in existing_groups:
                 while len(members) < members_per_group and len(list_member) > 0 :
                     members.append(list_member.pop(0))
                 final_groups.append(members)
@@ -389,13 +380,13 @@ class Groups(commands.Cog):
             final_group_number+=1
             #await ctx.send(f'group {final_group_number} - members:{x}' )
             for membername in x:
-                
+
                 #print (membername, final_group_number)
                 db.query(
                     'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
                     (ctx.guild.id, final_group_number, membername)
                     )
-              
+
 
         await ctx.send('All the members are mapped to their new groups through autogroup. Please use command $autojoin to connect with your new group members.')
 
@@ -430,7 +421,7 @@ class Groups(commands.Cog):
         )
        # print(current_group_num)
 
-        
+
 # Removes members from their existing group channel 
         for i in range(100):
             identifier = "group_" + str(i)
@@ -465,12 +456,6 @@ class Groups(commands.Cog):
             existing_channel = get(ctx.guild.text_channels, name=group_channel_name)
             if existing_channel is None:
                 await ctx.guild.create_text_channel(group_channel_name, overwrites=overwrites)
-
-        
-        
-
-
-
 
     # -----------------------------------------------------------
     # This is a testing arg, not really used for anything else but adding to the csv file
