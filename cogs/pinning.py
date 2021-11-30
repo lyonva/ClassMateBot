@@ -9,8 +9,8 @@ import sys
 from discord.ext import commands
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src import db
-from src.utils import *
+import db
+import utils
 
 
 class Pinning(commands.Cog):
@@ -23,11 +23,11 @@ class Pinning(commands.Cog):
     async def helpful3(self, ctx):
         await ctx.author.send(f"Pong! My ping currently is {round(self.bot.latency * 1000)}ms")
 
-       
+
 
     @commands.command(name="pin", help="Pin a message by adding a tagname (single word) and a description(can be multi word).")
     async def addMessage(self, ctx, tagname: str, *, description: str):
-        
+
         """
         Function: addMessage(self, ctx, tagname: str, *, description: str)
         Description: Used to pin a message by the user. The message gets stored in a JSON file in the required format.
@@ -38,14 +38,14 @@ class Pinning(commands.Cog):
         - description: description of the pinned message given by the user.
         Outputs: Adds pinned message to DB.
        """
-        
+
         if is_dm(ctx):
             author = ctx.message.author
             result = await chooseGuild(self, ctx)
-            
+
             servers = result[0]
             res = result[1]
-            
+
             db.query(
                 'INSERT INTO pinned_messages (guild_id, author_id, tag, description) VALUES (%s, %s, %s, %s)',
                 (servers[res - 1], author.id, tagname, description)
@@ -62,14 +62,14 @@ class Pinning(commands.Cog):
             await ctx.author.send(
                 "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 <link to message> HW8 reminder )")
         print(error)
-        
 
-   
+
+
 
     @commands.command(name="unpin", help="Unpin a message by passing the tagname.")
     async def deleteMessage(self, ctx, tagname: str):
-        
-        
+
+
         """
         Function: deleteMessage(self, ctx, tagname: str, *)
         Description: This command unpins the pinned messages with the provided tagname.
@@ -79,16 +79,16 @@ class Pinning(commands.Cog):
         - tagname: the tag used to identify which pinned messages are to be deleted.
         Outputs: Remove pinned message from DB.
         """
-        
+
         if is_dm(ctx):
             author = ctx.message.author
 
             result = await chooseGuild(self, ctx)
-            
+
             servers = result[0]
             res = result[1]
-            
-            
+
+
             rows_deleted = db.query(
                 'SELECT * FROM pinned_messages WHERE guild_id = %s AND tag = %s AND author_id = %s',
                 (servers[res - 1], tagname, author.id)
@@ -114,7 +114,7 @@ class Pinning(commands.Cog):
                 'To use the unpin command, do: $unpin TAGNAME \n ( For example: $unpin HW8 )')
         print(error)
 
-   
+
     @commands.command(name="pinnedmessages", help="Retrieve the pinned messages by a particular tag or all messages.")
     async def retrieveMessages(self, ctx, tagname: str = ""):
 
@@ -132,10 +132,10 @@ class Pinning(commands.Cog):
             author = ctx.message.author
 
             result = await chooseGuild(self, ctx)
-            
+
             servers = result[0]
             res = result[1]
-            
+
             if tagname == "":
                 messages = db.query(
                     'SELECT tag, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s',
@@ -157,10 +157,10 @@ class Pinning(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
                 "To use the pinnedmessages command, do: $pinnedmessages:"
-                " TAGNAME \n ( For example: $pinnedmessages HW8 )")           
+                " TAGNAME \n ( For example: $pinnedmessages HW8 )")
         print(error)
 
-       
+
 
     @commands.command(name="updatepin", help="Update a previously pinned message by passing the tagname and old description in the same order")
     async def updatePinnedMessage(self, ctx, tagname: str, *, description: str):
@@ -179,7 +179,7 @@ class Pinning(commands.Cog):
             await ctx.invoke(self.bot.get_command('pin'), tagname=tagname, description=description)
         else:
             await ctx.author.send("$updatepin is a DM only command! Try sending a DM")
-            
+
     @updatePinnedMessage.error
     async def updatePinnedMessage_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):

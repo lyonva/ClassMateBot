@@ -8,7 +8,7 @@ from discord.ext.commands import Bot
 from setuptools import glob
 from os.path import dirname as d
 from os.path import abspath, join
-from src import db
+import db
 
 db.TESTING_MODE = True
 
@@ -23,12 +23,11 @@ sys.path.append(root_dir)
 def bot(event_loop):
     bot = Bot(intents=intents, command_prefix="$", loop=event_loop)
     dir = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(dir)
-    os.chdir('src/cogs')
+    os.chdir(dir + "/cogs")
     for filename in os.listdir(os.getcwd()):
-        if filename.endswith('.py'):
-            bot.load_extension(f"src.cogs.{filename[:-3]}")
-    bot.load_extension('jishaku')
+        if filename.endswith(".py"):
+            bot.load_extension(f"cogs.{filename[:-3]}")
+    bot.load_extension("jishaku")
     dpytest.configure(bot)
     return bot
 
@@ -36,7 +35,7 @@ def bot(event_loop):
 # Cleans up leftover files generated through dpytest
 def pytest_sessionfinish():
     # Clean up attachment files
-    files = glob.glob('./dpytest_*.dat')
+    files = glob.glob("./dpytest_*.dat")
     for path in files:
         try:
             os.remove(path)
@@ -45,5 +44,6 @@ def pytest_sessionfinish():
     print("\npySession closed successfully")
     # rollback all db modifications made
     db.CONN.rollback()
+
 
 # Copyright (c) 2021 War-Keeper
