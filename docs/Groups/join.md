@@ -2,7 +2,7 @@
 This command lets the student add their name to the group member list. This is used to ensure that all students can get into a group and making sure no duplicates occur in the process
 
 # Location of Code
-The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/groups.py).
+The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/cogs/groups.py).
 
 # Code Description
 ## Functions

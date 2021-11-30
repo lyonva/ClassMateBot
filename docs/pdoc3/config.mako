@@ -19,7 +19,7 @@
     # are: commit, path, start_line, end_line.
     #git_link_template = 'https://github.com/USER/PROJECT/blob/{commit}/{path}#L{start_line}-L{end_line}'
     #git_link_template = 'https://gitlab.com/USER/PROJECT/blob/{commit}/{path}#L{start_line}-L{end_line}'
-    #git_link_template = 'https://bitbucket.org/USER/PROJECT/src/{commit}/{path}#lines-{start_line}:{end_line}'
+    #git_link_template = 'https://bitbucket.org/USER/PROJECT/{commit}/{path}#lines-{start_line}:{end_line}'
     #git_link_template = 'https://CGIT_HOSTNAME/PROJECT/tree/{path}?id={commit}#n{start-line}'
     git_link_template = None
     # A prefix to use for every HTML hyperlink in the generated documentation.
@@ -28,7 +28,7 @@
     # Enable syntax highlighting for code/source blocks by including Highlight.js
     syntax_highlighting = True
     # Set the style keyword such as 'atom-one-light' or 'github-gist'
-    #     Options: https://github.com/highlightjs/highlight.js/tree/master/src/styles
+    #     Options: https://github.com/highlightjs/highlight.js/tree/master/styles
     #     Demo: https://highlightjs.org/static/demo/
     hljs_style = 'github'
     # If set, insert Google Analytics tracking code. Value is GA

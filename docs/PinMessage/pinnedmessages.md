@@ -2,7 +2,7 @@
 This command lets the student to retrieve all the pinned messages from their private pinning board with an optional given tagname.
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/pinning.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/cogs/pinning.py).
 
 # Code Description
 ## Functions

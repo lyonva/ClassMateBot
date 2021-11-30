@@ -8,7 +8,7 @@ To set up and run the ClassMate Bot:
     git clone https://github.com/lyonva/ClassMateBot.git
     cd ClassMateBot
     ```
-3. In the repository directory, run `pip install -r src/requirements.txt`
+3. In the repository directory, run `pip install -r requirements.txt`
 4. Create a `.env` file in your project's root directory (we will put things into it later)
 5. Create a Discord bot and get its token:
    1. Create a [Discord Account](https://discord.com/login)
@@ -28,7 +28,7 @@ To set up and run the ClassMate Bot:
       TOKEN={your-bot-token}
       DATABASE_URL={your-database-url}
       ```
-7. Start the bot. From the project root directory, run `python3 src/bot` (or `python src/bot.py` on Windows)
+7. Start the bot. From the project root directory, run `python3 bot` (or `python bot.py` on Windows)
 8. Invite the bot to your server ([Follow instructions here](https://realpython.com/how-to-make-a-discord-bot-python/)) (**Please ensure the bot is running in order for server intialization to happen properly**)
     * NOTE:  When using the OAuth2 URL Generator, make sure you check the box which gives your bot Administrative permissions
 9. You should now be able to input commands and get responses from the bot as appropriate.

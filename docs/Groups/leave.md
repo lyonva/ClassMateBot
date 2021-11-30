@@ -2,7 +2,7 @@
 This command lets the student leave their current group. This is used to ensure that if a member switches groups or drops the class, then they can be removed from a group.
 
 # Location of Code
-The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/groups.py).
+The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/cogs/groups.py).
 
 # Code Description
 ## Functions
