@@ -2,7 +2,7 @@
 This command lets the user delete all their reminders. If used inside a server, deletes all your reminders for that server. Otherwise it deletes all your reminders across all ClassMateBot servers.
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/deadline.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/cogs/deadline.py).
 
 # Code Description
 ## Functions

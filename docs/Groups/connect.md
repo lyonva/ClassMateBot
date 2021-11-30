@@ -3,7 +3,7 @@ This command lets the user create private text channels for all groups with memb
 Note: Running this command will delete all current private group channels!
 
 # Location of Code
-The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/src/cogs/groups.py).
+The code that implements the above-mentioned gits functionality is located [here](https://github.com/lyonva/ClassMateBot/blob/main/cogs/groups.py).
 
 # Code Description
 ## Functions
