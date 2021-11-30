@@ -202,7 +202,7 @@ class Qanda(commands.Cog):
         Outputs:
              - User answer added to question post
         """
-        results = await chooseGuild(self, ctx)
+        results = await utils.chooseGuild(self, ctx)
         guild_list = results[0]
         msg = results[1]
         result = ""
@@ -241,7 +241,7 @@ class Qanda(commands.Cog):
         Outputs:
              - Question and appropriate answer (if one exists)
         """
-        results = await chooseGuild(self, ctx)
+        results = await utils.chooseGuild(self, ctx)
         msg = results[1]  # Int the user entered from previous function call
         guild_list = str(results[0][msg - 1])  # Guild the user wishes to interact with
         result = ""
@@ -321,6 +321,7 @@ class Qanda(commands.Cog):
                 await ctx.send(
                     f"Question {num} has been deleted\n"
                 )  # Tells the user a question and/or answer has been deleted
+
 
 # -----------------------------------------------------------------------------------------------------------------
 # Function: chooseNumber
