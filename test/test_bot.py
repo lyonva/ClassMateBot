@@ -89,7 +89,7 @@ ONLY_DM_TEXT = "That command is DM only. Try DMing me."
 ONLY_SERVER_TEXT = "This command can only be used inside a server."
 
 @pytest.mark.asyncio
-async def test_emptyreminders(bot):
+async def test_reminders_empty(bot):
     # Test all reminder read commands when we have no reminders
     await dpytest.message("$ping")
     dm_channel = dpytest.get_message().channel
@@ -97,6 +97,52 @@ async def test_emptyreminders(bot):
     assert dpytest.get_message().content == NO_REMINDER_TEXT
     await dpytest.message("$duethisweek", channel = dm_channel)
     assert dpytest.get_message().content == NO_REMINDER_TEXT
+    await dpytest.message("$reminders", channel = dm_channel)
+    assert dpytest.get_message().content == NO_REMINDER_TEXT
+
+@pytest.mark.asyncio
+async def test_reminder_add(bot):
+    # Test that reminder clear works for our server
+    await dpytest.message("$ping")
+    dm_channel = dpytest.get_message().channel
+    
+    # Add something and check its added
+    await dpytest.message("$ra Birthday NOV 30 2021 10:00")
+    assert dpytest.get_message().content == "Homework: Birthday due on: 2021-11-30 10:00:00 has been added."
+    
+    # Check our reminders
+    await dpytest.message("$reminders", channel = dm_channel)
+    assert dpytest.get_message().content != NO_REMINDER_TEXT
+
+@pytest.mark.asyncio
+async def test_reminder_edit(bot):
+    # Test that reminder clear works for our server
+    await dpytest.message("$ping")
+    dm_channel = dpytest.get_message().channel
+
+    # Add something and check its added
+    await dpytest.message("$ra Birthday NOV 29 2021 10:00")
+    assert dpytest.get_message().content == "Homework: Birthday due on: 2021-11-29 10:00:00 has been added."
+    
+    # Edit it
+    await dpytest.message("$re Birthday NOV 30 2021 10:00")
+    assert dpytest.get_message().content == "Birthday has been updated with following date: 2021-11-30 10:00:00"
+
+@pytest.mark.asyncio
+async def test_reminder_delete(bot):
+    # Test that reminder clear works for our server
+    await dpytest.message("$ping")
+    dm_channel = dpytest.get_message().channel
+    
+    # Add something and check its added
+    await dpytest.message("$ra Birthday NOV 30 2021 10:00")
+    assert dpytest.get_message().content == "Homework: Birthday due on: 2021-11-30 10:00:00 has been added."
+    
+    # Remove and check
+    await dpytest.message("$rd Birthday")
+    assert dpytest.get_message().content == "Reminders deleted."
+    
+    # Check our reminders and see we have nothing
     await dpytest.message("$reminders", channel = dm_channel)
     assert dpytest.get_message().content == NO_REMINDER_TEXT
 
@@ -163,111 +209,42 @@ async def test_reminder_serveronlycommands(bot):
     assert dpytest.get_message().content == ONLY_SERVER_TEXT
 
 @pytest.mark.asyncio
-async def test_deadline(bot):
-    # Clear our reminders: Only if testing fails and leaves a reminders.JSON file with values behind
-    # await dpytest.message("$clearreminders")
-    # assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
-    # Test reminders while none have been set
-    await dpytest.message("$coursedue CSC505")
-    assert dpytest.verify().message().content("Rejoice..!! You have no pending homeworks for CSC505..!!")
-    # Test setting 1 reminder
-    await dpytest.message("$addhw CSC505 DANCE SEP 21 2050 10:00")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("A date has been added for: CSC505 homework named: DANCE which is due on: 2050-09-21 10:00:00")
-    )
-    # Test setting a 2nd reminder
-    await dpytest.message("$addhw CSC510 HW1 DEC 21 2050 19:59")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("A date has been added for: CSC510 homework named: HW1 which is due on: 2050-12-21 19:59:00")
-    )
-    # Test deleting reminder
-    await dpytest.message("$deletereminder CSC510 HW1")
-    assert (
-        dpytest.verify()
-        .message()
-        .content(
-            "Following reminder has been deleted: Course: CSC510, Homework Name: HW1, Due Date: 2050-12-21 19:59:00"
-        )
-    )
-    # Test re-adding a reminder
-    await dpytest.message("$addhw CSC510 HW1 DEC 21 2050 19:59")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("A date has been added for: CSC510 homework named: HW1 which is due on: 2050-12-21 19:59:00")
-    )
-    # Clear reminders at the end of testing since we're using a local JSON file to store them
-    await dpytest.message("$clearreminders")
-    assert dpytest.verify().message().content("All reminders have been cleared..!!")
-
-
-# --------------------------------
-# Test listing multiple reminders
-# --------------------------------
-@pytest.mark.asyncio
-async def test_listreminders(bot):
-    # Test listing multiple reminders
-    await dpytest.message("$addhw CSC505 DANCE SEP 21 2050 10:00")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("A date has been added for: CSC505 homework named: DANCE which is due on: 2050-09-21 10:00:00")
-    )
-    # Test setting a 2nd reminder
-    await dpytest.message("$addhw CSC510 HW1 DEC 21 2050 19:59")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("A date has been added for: CSC510 homework named: HW1 which is due on: 2050-12-21 19:59:00")
-    )
-    await dpytest.message("$listreminders")
-    assert (
-        dpytest.verify()
-        .message()
-        .contains()
-        .content("CSC505 homework named: DANCE which is due on: 2050-09-21 10:00:00")
-    )
-    assert (
-        dpytest.verify().message().contains().content("CSC510 homework named: HW1 which is due on: 2050-12-21 19:59:00")
-    )
-    # Test $coursedue
-    await dpytest.message("$coursedue CSC505")
-    assert dpytest.verify().message().contains().content("DANCE is due at 2050-09-21 10:00:00")
-    # Try to change the due date of DANCE to something impossible
-    await dpytest.message("$changeduedate CSC505 DANCE 4")
-    assert dpytest.verify().message().contains().content("Due date could not be parsed")
-    # Clear reminders at the end of testing since we're using a local JSON file to store them
-    await dpytest.message("$clearreminders")
-    assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
-
-    # Tests cogs/deadline.py
-
-
-# ------------------------------
-# Tests reminders due this week
-# ------------------------------
-@pytest.mark.asyncio
-async def test_duethisweek(bot):
+async def test_reminders_duethisweek(bot):
+    # Test reminders due this week
+    await dpytest.message("$ping")
+    dm_channel = dpytest.get_message().channel
+    
     # Try adding a reminder due in an hour
     now = datetime.now() + timedelta(hours=1)
     dt_string = now.strftime("%b %d %Y %H:%M")
-    await dpytest.message(f"$addhw CSC600 HW0 {dt_string}")
-    assert dpytest.verify().message().contains().content("A date has been added for: CSC600 homework named: HW0")
+    await dpytest.message(f"$ra HW0 {dt_string}")
+    dpytest.get_message() # Discard message
+    
+    # Try adding a reminder due in a day
+    now = datetime.now() + timedelta(hours=25)
+    dt_string = now.strftime("%b %d %Y %H:%M")
+    await dpytest.message(f"$ra HW1 {dt_string}")
+    dpytest.get_message() # Discard message
+    
     # Check to see that the reminder is due this week
-    await dpytest.message("$duethisweek")
-    assert dpytest.verify().message().contains().content("CSC600 HW0 is due this week")
-    # Clear reminders at the end of testing since we're using a local JSON file to store them
-    await dpytest.message("$clearreminders")
-    assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
+    await dpytest.message("$duethisweek", channel = dm_channel)
+    assert dpytest.get_message().content != NO_REMINDER_TEXT
+
+@pytest.mark.asyncio
+async def test_reminders_duetoday(bot):
+    # Test reminders due today week
+    await dpytest.message("$ping")
+    dm_channel = dpytest.get_message().channel
+    
+    # Try adding a reminder due in an hour
+    now = datetime.now() + timedelta(hours=3)
+    dt_string = now.strftime("%b %d %Y %H:%M")
+    await dpytest.message(f"$ra HW0 {dt_string}")
+    dpytest.get_message() # Discard message
+    
+    # Check to see that the reminder is due this week
+    await dpytest.message("$duetoday", channel = dm_channel)
+    assert dpytest.get_message().content != NO_REMINDER_TEXT
 
 
 # --------------------

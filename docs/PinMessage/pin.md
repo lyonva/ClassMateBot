@@ -18,7 +18,7 @@ $pin HW https://discordapp.com/channels/139565116151562240/139565116151562240/89
 
 The bot will then ask you which server you want the message to be pinned to.
 
-[insert image here]
+[insert image here to show bot asking for server]
 
 Once you select the server, the command will pin the message.
 

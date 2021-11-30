@@ -115,6 +115,8 @@ For the voting.py file **(All Modified Commands in Project 2)**
 
 :open_file_folder: [$vote command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Voting/vote.md) 
 
+:open_file_folder: [$setlimit command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Voting/setlimit.md)
+
 For the deadline.py file
 
 :open_file_folder: [$add_homework command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/add_homework.md)

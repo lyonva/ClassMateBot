@@ -245,7 +245,7 @@ class Qanda(commands.Cog):
         msg = results[1]  # Int the user entered from previous function call
         guild_list = str(results[0][msg - 1])  # Guild the user wishes to interact with
         result = ""
-        num = str(await self.chooseNumber(self, ctx))  # Int of the question number the user entered
+        num = str(await chooseNumber(self, ctx))  # Int of the question number the user entered
         questions = db.query(
             "SELECT number, question FROM questions WHERE guild_id = %s and number = %s",
             (guild_list, num),
@@ -321,59 +321,36 @@ class Qanda(commands.Cog):
                     f"Question {num} has been deleted\n"
                 )  # Tells the user a question and/or answer has been deleted
 
-    # -----------------------------------------------------------------------------------------------------------------
-    # Function: chooseNumber
-    # Description: asks for user input to enter a number which is used by various other functionalities
-    # Inputs:
-    #      - ctx: context of the command
-    # Outputs:
-    #      - msg_int: int representation of the number the user entered
-    # -----------------------------------------------------------------------------------------------------------------
-    async def chooseNumber(self, ctx):
+
+# -----------------------------------------------------------------------------------------------------------------
+# Function: chooseNumber
+# Description: asks for user input to enter a number which is used by various other functionalities
+# Inputs:
+#      - ctx: context of the command
+# Outputs:
+#      - msg_int: int representation of the number the user entered
+# -----------------------------------------------------------------------------------------------------------------
+async def chooseNumber(self, ctx):
+    msg = ""
+    msg_int = 0
+
+    def check(m):
+        return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
+
+    valid_answer = False
+    while valid_answer == False:
         msg = ""
-        msg_int = 0
-
-        def check(m):
-            return m.content is not None and m.channel == ctx.channel and m.author == ctx.author
-
-        valid_answer = False
-        msg_array = []
-        while valid_answer == False:
-            msg = ""
-            if ctx.guild == None:
-                await ctx.author.send("Please enter a question number: \n")
-            else:
-                first = await ctx.send("Please enter a question number: \n")
-                msg_array.append(first.id)
-            msg = await self.bot.wait_for("message", check=check)
-            msg_array.append(msg.id)
-            try:
-                msg_int = int(msg.content)
-                valid_answer = True
-            except Exception as e:
-                print(e)
-                if ctx.guild == None:
-                    await ctx.author.send(
-                        "You have entered an invalid option\n" + "Please make sure you are entering an integer"
-                    )
-                else:
-                    second = await ctx.send(
-                        "You have entered an invalid option\n" + "Please make sure you are entering an integer"
-                    )
-                    array_count = 0
-                    for id in msg_array:
-                        to_delete = await ctx.fetch_message(str(id))
-                        await to_delete.delete()
-                        array_count += 1
-                    current_count = 0
-                    while current_count < array_count:
-                        msg_array.pop(0)
-                        current_count += 1
-                    msg_array.append(second.id)
-        for id in msg_array:
-            to_delete = await ctx.fetch_message(str(id))
-            await to_delete.delete()
-        return msg_int
+        await ctx.author.send("Please enter a question number: \n")
+        msg = await self.bot.wait_for("message", check=check)
+        try:
+            msg_int = int(msg.content)
+            valid_answer = True
+        except Exception as e:
+            print(e)
+            await ctx.author.send(
+                "You have entered an invalid option\n" + "Please make sure you are entering an integer"
+            )
+    return msg_int
 
 
 def setup(bot):
