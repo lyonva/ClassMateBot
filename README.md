@@ -21,7 +21,7 @@
   <a href="#earth_americas-future-scope">Future Scope</a>
   ::
   <a href="#pencil2-contributors-for-project-2">Contributors</a>
-  
+
 </p>
 
 ---
@@ -44,7 +44,7 @@ This is Project 2 for the ClassMate Bot. Changes are marked below and listed in 
 
 ## :orange_book: Description
 
-There are three basic user groups in a ClassMateBot, which are Students, Professor and TAs. Some basic tasks for the bot for the students user group should be automating the task of group making for projects or homeworks, Projection deadline reminders, asking questions, getting questions for review etc. For TAs it is taking up polls, or answering questions asked by the students. 
+There are three basic user groups in a ClassMateBot, which are Students, Professor and TAs. Some basic tasks for the bot for the students user group should be automating the task of group making for projects or homeworks, Projection deadline reminders, asking questions, getting questions for review etc. For TAs it is taking up polls, or answering questions asked by the students.
 
 
 Our ClassMateBot focuses on the student side of the discord channel, i.e. currently it focuses on the problems faced by the students while using these discord channels.
@@ -54,12 +54,12 @@ The user stories covered here would be more concerned about the activities for t
 ---
 
 ### 1 - Student Verification
-Once the new member joins the server, before giving them the access to the channels there is a need to get the real full name of the member to map it with the discord nick name. This mapping can later be used for group creation, voting and so on. To do this we first assign the unverified role to the new comer and then ask them to verify their identity using $verify command. If that goes through, the member is assigned a student role and has full access to the server resources. The bot then welcomes the member and also provides important links related to the course.  
+Once the new member joins the server, before giving them the access to the channels there is a need to get the real full name of the member to map it with the discord nick name. This mapping can later be used for group creation, voting and so on. To do this we first assign the unverified role to the new comer and then ask them to verify their identity using $verify command. If that goes through, the member is assigned a student role and has full access to the server resources. The bot then welcomes the member and also provides important links related to the course.
 ![image](https://user-images.githubusercontent.com/32313919/140422661-ee3c4c68-8cb0-4032-b5a6-8192ee98ac10.png)
 
 
 ### 2 - Project Voting
-Voting for projects is a common occurence that many students must endure. With the addition of a voting system, this task is made easier by allowing student groups to place themselves on projects through an easy to use discord system. With the combination of the ClassMateBot grouping system, teams can easily vote their group into a project, switch their votes, or view the full list of projects that have been voted for.  
+Voting for projects is a common occurence that many students must endure. With the addition of a voting system, this task is made easier by allowing student groups to place themselves on projects through an easy to use discord system. With the combination of the ClassMateBot grouping system, teams can easily vote their group into a project, switch their votes, or view the full list of projects that have been voted for.
 ![image](https://user-images.githubusercontent.com/32313919/140250549-8de514c0-d411-41fe-976c-6b43c7bd1edf.png)
 ![image](https://user-images.githubusercontent.com/32313919/140250910-3aa8d6cd-000d-4b51-949a-0c60f3464c3b.png)
 
@@ -74,7 +74,7 @@ Another problem that the students face is that they cannot pin important message
 
 
 ### 5 - Group Creation
-Another unique and useful feature of our ClassMateBot is that it helps the students in the process of group making for their projects. Through this feature, the bot could help the students identify other members of the class with similar ideals and acts as a medium to connect them initially. This feature is also helpful for students randomly assigned to a group to connect with the new member which would not only save time, but also, saves effort as many times students do not have their names as their usernames on discord. Through this students can join, leave or connect with others. 
+Another unique and useful feature of our ClassMateBot is that it helps the students in the process of group making for their projects. Through this feature, the bot could help the students identify other members of the class with similar ideals and acts as a medium to connect them initially. This feature is also helpful for students randomly assigned to a group to connect with the new member which would not only save time, but also, saves effort as many times students do not have their names as their usernames on discord. Through this students can join, leave or connect with others.
 
 ![image](https://user-images.githubusercontent.com/32313919/140244316-7fac7ce4-32a7-444d-b8cf-b3b8b2d2dea1.png)
 
@@ -85,13 +85,28 @@ Moreover, the group creation feature allows members of the group to join a priva
 
 
 ### 6 - Question and Answer **(New Project 2 Commands)**
-A common usage for our current class Discord is for students to ask questions about the course. It is helpful for the questions to be numbered and for the answers to be attached to the question so it be easily found. Some students may feel more comfortable asking and answering questions anonymously. It is also helpful for users to know if the question is answered by a student or instructor. This feature keeps the questions and answers all in one channel so it does not clutter other channels and can be more easily viewed. 
-![image](https://user-images.githubusercontent.com/32313919/140245147-80aca7ff-525a-4cfb-89d0-df5d10afd691.png)  
+A common usage for our current class Discord is for students to ask questions about the course. It is helpful for the questions to be numbered and for the answers to be attached to the question so it be easily found. Some students may feel more comfortable asking and answering questions anonymously. It is also helpful for users to know if the question is answered by a student or instructor. This feature keeps the questions and answers all in one channel so it does not clutter other channels and can be more easily viewed.
+![image](https://user-images.githubusercontent.com/32313919/140245147-80aca7ff-525a-4cfb-89d0-df5d10afd691.png)
 ![image](https://user-images.githubusercontent.com/32313919/140245276-e2752e1b-eea0-4998-9dcc-2f6c6df6dac4.png)
 
+#### 6a - Delete Question **(New Project 3 Commands)**
+There can be many situations where we would want to delete a question. It may be a duplicate of another question, a question that is better handled privately, or some other form of spam. With project 3, instructors now have the ability to delete questions.
 
-### 7 - Review Questions **(New Project 2 Commands)**  
-An essential part of studying is going over questions related to the exam topics. This feature allows instructors to add review questions and students to get random review questions. To enhance its effectiveness, the answers to the review questions are hidden as a *spoiler* that students can choose to unveil when they are ready. 
+![Delete Question](data/media/deleteq.png)
+
+#### 6b - Get All Questions & Answers **(New Project 3 Commands)**
+A user may want to easily see a list of all the questions and answers that have been asked in a server. To prevent spam in the server itself, the user sends the command to the bot through a direct message, the bot responds asking the user to select a server, and then returns with a nicely formatted list of all the questions and answers that have been asked in the requested server
+
+![Delete Question](data/media/getQAs.png)
+
+#### 6c - Get a Question & Answer **(New Project 3 Commands)**
+A user may want to easily see a specific question and answer that have been asked in a server. To prevent spam in the server itself, the user sends the command to the bot through a direct message, the bot responds asking the user to select a server and question number, and then returns with a nicely formatted presentation of the question and answer that has been asked in the requested server
+
+![Delete Question](data/media/getq.png)
+
+
+### 7 - Review Questions **(New Project 2 Commands)**
+An essential part of studying is going over questions related to the exam topics. This feature allows instructors to add review questions and students to get random review questions. To enhance its effectiveness, the answers to the review questions are hidden as a *spoiler* that students can choose to unveil when they are ready.
 ![image](https://user-images.githubusercontent.com/32313919/140245925-22769537-ef22-420f-9ed2-b9153a71938e.png)
 
 ---
@@ -109,9 +124,9 @@ For the newComer.py file
 
 For the voting.py file **(All Modified Commands in Project 2)**
 
-:open_file_folder: [$projects command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Voting/projects.md) 
+:open_file_folder: [$projects command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Voting/projects.md)
 
-:open_file_folder: [$vote command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Voting/vote.md) 
+:open_file_folder: [$vote command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Voting/vote.md)
 
 :open_file_folder: [$setlimit command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Voting/setlimit.md)
 
@@ -134,13 +149,13 @@ For the deadline.py file **(All Commands Reworked in Project 3)**
 
 For the pinning.py file **(All Modified Commands in Project 2)**
 
-:open_file_folder: [$pin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/pin.md) 
+:open_file_folder: [$pin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/pin.md)
 
-:open_file_folder: [$unpin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/unpin.md) 
+:open_file_folder: [$unpin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/unpin.md)
 
-:open_file_folder: [$pinnedmessages command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/pinnedmessages.md) 
+:open_file_folder: [$pinnedmessages command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/pinnedmessages.md)
 
-:open_file_folder: [$updatepin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/updatepin.md) 
+:open_file_folder: [$updatepin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/PinMessage/updatepin.md)
 
 For the groups.py file
 
@@ -160,20 +175,20 @@ For the groups.py file
 
 For the qanda.py file **(All New Commands in Project 2)**
 
-:open_file_folder: [$ask command](https://github.com/lyonva/ClassMateBot/blob/main/docs/QandA/ask.md) 
+:open_file_folder: [$ask command](https://github.com/lyonva/ClassMateBot/blob/main/docs/QandA/ask.md)
 
-:open_file_folder: [$answer command](https://github.com/lyonva/ClassMateBot/blob/main/docs/QandA/answer.md) 
+:open_file_folder: [$answer command](https://github.com/lyonva/ClassMateBot/blob/main/docs/QandA/answer.md)
 
 For the reviewqs.py file **(All New Commands in Project 2)**
 
-:open_file_folder: [$addQuestion command](https://github.com/lyonva/ClassMateBot/blob/main/docs/ReviewQs/addQuestion.md) 
+:open_file_folder: [$addQuestion command](https://github.com/lyonva/ClassMateBot/blob/main/docs/ReviewQs/addQuestion.md)
 
-:open_file_folder: [$getQuestion command](https://github.com/lyonva/ClassMateBot/blob/main/docs/ReviewQs/getQuestion.md) 
+:open_file_folder: [$getQuestion command](https://github.com/lyonva/ClassMateBot/blob/main/docs/ReviewQs/getQuestion.md)
 
 ---
 
 ## :earth_americas: Future Scope
-[Project 3](https://github.com/lyonva/ClassMateBot/projects/2) suggested tasks are located in the Projects tab. 
+[Project 3](https://github.com/lyonva/ClassMateBot/projects/2) suggested tasks are located in the Projects tab.
 
 ---
 
@@ -202,4 +217,3 @@ For the reviewqs.py file **(All New Commands in Project 2)**
     <td align="center"><a href="https://github.com/salvisumedh2396"><img src="https://avatars.githubusercontent.com/u/72020618?s=96&v=4" width="75px;" alt=""/><br /><sub><b>Sumedh Salvi</b></sub></a><br /></td>
   </tr>
 </table>
-
