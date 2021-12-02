@@ -109,6 +109,11 @@ A user may want to easily see a specific question and answer that have been aske
 An essential part of studying is going over questions related to the exam topics. This feature allows instructors to add review questions and students to get random review questions. To enhance its effectiveness, the answers to the review questions are hidden as a *spoiler* that students can choose to unveil when they are ready.
 ![image](https://user-images.githubusercontent.com/32313919/140245925-22769537-ef22-420f-9ed2-b9153a71938e.png)
 
+### 8 - poll command (New Project 3 Command)
+
+An instructor may want to send a poll to the students. This can be done by using $poll command. The poll will be posted as a reaction poll where every option in the poll is represented by a number in the reactions. To vote, you have to react to the message with the number corresponds to the chosen option.
+
+<img src="data/media/poll.JPG" width="400">
 ---
 
 
