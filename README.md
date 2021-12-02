@@ -70,7 +70,7 @@ The next important thing our project covers is the Deadline reminder feature of 
 
 ### 4 - Personally Pinning Messages
 Another problem that the students face is that they cannot pin important messages they want to go back to later. With pinned messages, the student can save discord message links easily to point back to prior messages or just leave their own general messages. It is a very easy system to use. You can copy the link of the message you want to pin and DM the bot to pin it. If the bot is present in multiple servers, it will ask you which server you want to pin the message to.
-![image](https://user-images.githubusercontent.com/32313919/140243037-8e4c192c-5842-4fd9-85b0-6cccaf3f74ab.png)
+![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/pin.JPG)
 
 
 ### 5 - Group Creation
