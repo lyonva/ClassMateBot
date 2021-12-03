@@ -121,6 +121,15 @@ An essential part of studying is going over questions related to the exam topics
 An instructor may want to send a poll to the students. This can be done by using $poll command. The poll will be posted as a reaction poll where every option in the poll is represented by a number in the reactions. To vote, you have to react to the message with the number corresponds to the chosen option.
 
 <img src="data/media/poll.JPG" width="400">
+
+### 9 Autogroup (New Project 3 Command)
+
+This command automatically splits the existing members in the server into different groups. It is useful for professors for splitting the students into different groups for homework and projects.
+
+### 10 Autojoin (New Project 3 Command)
+
+This command adds each member in a group to their separate group text channel. This will help the students to coordinate with other members of their group for working on their assignments and project. 
+
 ---
 
 
