@@ -126,9 +126,14 @@ An instructor may want to send a poll to the students. This can be done by using
 
 This command automatically splits the existing members in the server into different groups. It is useful for professors for splitting the students into different groups for homework and projects.
 
+![image](/data/media/autogroup.png)
+
+
 ### 10 Autojoin (New Project 3 Command)
 
 This command adds each member in a group to their separate group text channel. This will help the students to coordinate with other members of their group for working on their assignments and project. 
+
+![image](/data/media/autojoin.png)
 
 ---
 
