@@ -60,8 +60,8 @@ Once the new member joins the server, before giving them the access to the chann
 
 ### 2 - Project Voting
 Voting for projects is a common occurence that many students must endure. With the addition of a voting system, this task is made easier by allowing student groups to place themselves on projects through an easy to use discord system. With the combination of the ClassMateBot grouping system, teams can easily vote their group into a project, switch their votes, or view the full list of projects that have been voted for.
-![image](https://user-images.githubusercontent.com/32313919/140250549-8de514c0-d411-41fe-976c-6b43c7bd1edf.png)
-![image](https://user-images.githubusercontent.com/32313919/140250910-3aa8d6cd-000d-4b51-949a-0c60f3464c3b.png)
+![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/setLimit.png?raw=true)
+![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/updateLimit.png?raw=true)
 
 
 ### 3 - Deadline Reminder **(Reworked on Project 3)**
