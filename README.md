@@ -104,7 +104,7 @@ There can be many situations where we would want to delete a question. It may be
 #### 6b - Get All Questions & Answers **(New Project 3 Commands)**
 A user may want to easily see a list of all the questions and answers that have been asked in a server. To prevent spam in the server itself, the user sends the command to the bot through a direct message, the bot responds asking the user to select a server, and then returns with a nicely formatted list of all the questions and answers that have been asked in the requested server
 
-![Delete Question](data/media/getQAs.png)
+![Delete Question](data/media/getqas.png)
 
 #### 6c - Get a Question & Answer **(New Project 3 Commands)**
 A user may want to easily see a specific question and answer that have been asked in a server. To prevent spam in the server itself, the user sends the command to the bot through a direct message, the bot responds asking the user to select a server and question number, and then returns with a nicely formatted presentation of the question and answer that has been asked in the requested server
@@ -185,6 +185,10 @@ For the pinning.py file **(All Modified Commands in Project 2)**
 
 For the groups.py file
 
+:open_file_folder: [$autogroup command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/autogroup.md) **(New Command in Project 3)**
+
+:open_file_folder: [$autojoin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/autojoin.md) **(New Command in Project 3)**
+
 :open_file_folder: [$startupgroups command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/startupgroups.md) **(New Command in Project 2)**
 
 :open_file_folder: [$reset command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/reset.md) **(New Command in Project 2)**
@@ -198,10 +202,6 @@ For the groups.py file
 :open_file_folder: [$join command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/join.md) **(Modified Command in Project 2)**
 
 :open_file_folder: [$leave command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/leave.md) **(Modified Command in Project 2)**
-
-:open_file_folder: [$autogroup command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/autogroup.md) **(New Command in Project 3)**
-
-:open_file_folder: [$autojoin command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/autojoin.md) **(New Command in Project 3)**
 
 For the qanda.py file **(All New Commands in Project 2)**
 
