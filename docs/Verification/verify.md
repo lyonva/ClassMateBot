@@ -10,7 +10,10 @@ The code that implements the above mentioned gits functionality is located [here
 
 ## Functions
 
-1. <em> <b> def on*guild_join(guild)</em> </b>: <br> This function gets called when the ClassMateBot joins a new guild. It first creates the "instructor-commands", "q-and-a" and "verification" channels if they don't already exist. It then check if the required roles (Instructor, verified and unverified) exist and if they don't, create them. The roles are then assigned to the members of the guild. <b>Note</b>: the bot must be running \_before* it is added to a new guild in order for this function to run.<br>
+1. <em> <b> def on_guild_join(guild)</em> </b>: <br> This function gets called when the ClassMateBot joins a new guild. It first creates the member roles (Instructor, verified and unverified), if they don't exist.
+Then the permission overwrites are defined for each role. This overwrites are used to set the permissions for the channels.
+Next, the "instructor-commands", "q-and-a" and "verification" channels are created if they don't already exist. The guild owner is assigned the "Instructor" role and an entry is made into the "name_mapping" table. 
+The roles are then assigned to the other members of the guild (excluding the bot). <b>Note</b>: the bot must be running \_before* it is added to a new guild in order for this function to run.<br>
 
 2. <em><b>def on_member_join(member)</em></b>: <br> This function gets called when a new member joins the guild. It sends a DM to the new member asking them to verify with appropriate instructions. It takes as arguments the object of the member who has joined the server. <br>
 
@@ -27,4 +30,5 @@ $verify Jane Doe
 
 Successful execution of this command will assign you a verified role and give you the access to the channels. You will also receive a welcome message from ClassMateBot with important links related to the course.
 
+You can see in the images attached below that the user cannot see all the channels and cannot send messages in the general channel unless they verify. Once verification has been completed, the member gets the read and write permissions.
 ![image]()
