@@ -185,6 +185,10 @@ For the groups.py file
 
 :open_file_folder: [$leave command](https://github.com/lyonva/ClassMateBot/blob/main/docs/Groups/leave.md) **(Modified Command in Project 2)**
 
+:open_file_folder: [$autogroup command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/autogroup.md) **(New Command in Project 3)**
+
+:open_file_folder: [$autojoin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/autojoin.md) **(New Command in Project 3)**
+
 For the qanda.py file **(All New Commands in Project 2)**
 
 :open_file_folder: [$ask command](https://github.com/lyonva/ClassMateBot/blob/main/docs/QandA/ask.md)
