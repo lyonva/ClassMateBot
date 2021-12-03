@@ -23,3 +23,7 @@ Successful execution of this command will return a message saying the limit has 
 It is simple enough to change the limit by just setting the limit to a different value.
 
 ![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/updateLimit.png?raw=true)
+  
+Once the limit is set, if a group tries to vote for a project which has already received maximum allowed votes, an error would be thrown.
+  
+![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/limit_error.png?raw=true)
