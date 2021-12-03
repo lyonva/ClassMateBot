@@ -21,4 +21,6 @@ $updatepin TAGNAME DESCRIPTION
 $updatepin HW https://discordapp.com/channels/139565116151562240/139565116151562240/890814489480531969 HW8 reminder
 ```
 
-The bot currently deletes the old pin and creates a new one to update a pin.Hence, the bot will first ask you which server you want the pin removed from and then which server you want the pin to be created in. (future improvement) ![image]()
+The bot currently deletes the old pin and creates a new one to update a pin.Hence, the bot will first ask you which server you want the pin removed from and then which server you want the pin to be created in. (future improvement) 
+
+![](https://github.com/lyonva/ClassMateBot/blob/main/data/media/updatepin.JPG)
