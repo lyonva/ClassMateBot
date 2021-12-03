@@ -10,7 +10,7 @@ The code that implements the above mentioned gits functionality is located [here
 This function takes as arguments the values provided by the constructor through self, context in which the command was called, tagname of the pinned message, and the description of the pinned message.
 
 ##### How to run it? (Small Example)
-Let's say you're are in multiple servers with the bot. You can ask the bot to pin a message for you by sending the "$pin" command as a direct message (dm) to the bot. The arguments passed are the tag and the description.
+Let's say you're are in multiple servers with the bot. You can ask the bot to pin a message for you by sending the "$pin" command as a direct message (dm) to the bot. The arguments passed are the tag and the description. You can provide the link to a particular message that you want to pin in the description section of the command. You can also leave out the message link and pin a personal message if you want to.
 ```
 $pin TAGNAME DESCRIPTION
 $pin HW https://discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder
