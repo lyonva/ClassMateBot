@@ -67,8 +67,9 @@ Voting for projects is a common occurence that many students must endure. With t
 #### 2a - Change Limit **(New Project 3 Commands)**
 The instructor has the option to set the limit for the number of votes that a particular project can receive. In order for instructor to promote multiple project selection, the setlimit option can be used which will enforce that a single project can only receive n number of votes and a group might have to opt for a different project if the selected project has already received n votes.
 
-![image](https://user-images.githubusercontent.com/32313919/140250549-8de514c0-d411-41fe-976c-6b43c7bd1edf.png)
-![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/votechange.gif)
+![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/setLimit.png?raw=true)
+
+![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/updateLimit.png?raw=true)
 
 ![image](https://github.com/lyonva/ClassMateBot/blob/main/data/media/limit_error.png?raw=true)
 
