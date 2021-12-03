@@ -21,10 +21,8 @@ $pinnedmessages TAGNAME(optional)
 $pinnedmessages HW
 ```
 
-The bot will ask you to enter the server for which you want to see the pinned messages
-
-[image here to show bot asking for server]
+The bot will ask you to enter the server from which you want to see the pinned messages.
 
 Successful execution would give the result as shown
 
-[change image] ![image]()
+![](https://github.com/lyonva/ClassMateBot/blob/main/data/media/pinnedmessages.JPG)
