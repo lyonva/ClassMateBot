@@ -23,8 +23,6 @@ $unpin HW
 
 The bot will ask you to choose which server you want to unpin the message from.
 
-[insert image of bot asking for server]
-
 Successful execution of this command will unpin the message with the tagname.
 
-![image]()
+![](https://github.com/lyonva/ClassMateBot/blob/main/data/media/unpin.JPG)
