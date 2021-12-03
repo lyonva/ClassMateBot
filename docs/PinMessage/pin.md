@@ -22,4 +22,4 @@ The bot will then ask you which server you want the message to be pinned to.
 
 Once you select the server, the command will pin the message.
 
-[insert image of successful pin]
+![](https://github.com/lyonva/ClassMateBot/blob/main/data/media/pin.JPG)
