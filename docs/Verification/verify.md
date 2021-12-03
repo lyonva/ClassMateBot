@@ -31,4 +31,5 @@ $verify Jane Doe
 Successful execution of this command will assign you a verified role and give you the access to the channels. You will also receive a welcome message from ClassMateBot with important links related to the course.
 
 You can see in the images attached below that the user cannot see all the channels and cannot send messages in the general channel unless they verify. Once verification has been completed, the member gets the read and write permissions.
-![image]()
+![Unverified](https://github.com/lyonva/ClassMateBot/blob/main/data/media/Unverified.png)
+![Verified](https://github.com/lyonva/ClassMateBot/blob/main/data/media/Verified.png)
