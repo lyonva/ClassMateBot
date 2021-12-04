@@ -219,8 +219,73 @@ For the reviewqs.py file **(All New Commands in Project 2)**
 
 ---
 
-## :earth_americas: Future Scope
-[Project 3](https://github.com/lyonva/ClassMateBot/projects/2) suggested tasks are located in the Projects tab.
+## :pencil2: Contributors for Project 3
+
+<table>
+  <tr>
+      <td align="center">
+          <a href="https://github.com/lyonva">
+              <img src="https://avatars.githubusercontent.com/u/77703306?v=4" width="50px;" alt=""/>
+              <br />
+              <sub>
+                  <b>Leo</b>
+              </sub>
+          </a>
+          <br />
+      </td>
+      <td align="center">
+        <a href="https://github.com/ConnorS1110">
+            <img src="https://avatars.githubusercontent.com/u/83387006?v=4" width="50px;" alt=""/>
+            <br />
+            <sub>
+                <b>Connor</b>
+            </sub>
+        </a>
+        <br />
+      </td>
+      <td align="center">
+          <a href="https://github.com/ashwith161">
+              <img src="https://avatars.githubusercontent.com/u/89534400?v=4" width="50px;" alt=""/>
+              <br />
+              <sub>
+                  <b>Ashwith</b>
+              </sub>
+          </a>
+          <br />
+      </td>
+      <td align="center">
+          <a href="https://github.com/Capt-Fluffy-Bug">
+              <img src="https://avatars.githubusercontent.com/u/41867601?v=4" width="50px;" alt=""/>
+              <br />
+              <sub>
+                  <b>Rahul</b>
+              </sub>
+          </a>
+          <br />
+      </td>
+      <td align="center">
+          <a href="https://github.com/vasuagrawal19">
+              <img src="https://avatars.githubusercontent.com/u/26514851?v=4" width="50px;" alt=""/>
+              <br />
+              <sub>
+                  <b>Vasu</b>
+              </sub>
+          </a>
+          <br />
+      </td>
+      <td align="center">
+          <a href="https://github.com/Muhammad-Alahmadi">
+              <img src="https://avatars.githubusercontent.com/u/89359263?v=4" width="50px;" alt=""/>
+              <br />
+              <sub>
+                  <b>Muhammad</b>
+              </sub>
+          </a>
+          <br />
+      </td>
+  </tr>
+
+</table>
 
 ---
 
