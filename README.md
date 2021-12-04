@@ -225,7 +225,7 @@ For the reviewqs.py file **(All New Commands in Project 2)**
   <tr>
       <td align="center">
           <a href="https://github.com/lyonva">
-              <img src="https://avatars.githubusercontent.com/u/77703306?v=4" width="50px;" alt=""/>
+              <img src="https://avatars.githubusercontent.com/u/77703306?v=4" width="75px;" alt=""/>
               <br />
               <sub>
                   <b>Leo</b>
@@ -235,7 +235,7 @@ For the reviewqs.py file **(All New Commands in Project 2)**
       </td>
       <td align="center">
         <a href="https://github.com/ConnorS1110">
-            <img src="https://avatars.githubusercontent.com/u/83387006?v=4" width="50px;" alt=""/>
+            <img src="https://avatars.githubusercontent.com/u/83387006?v=4" width="75px;" alt=""/>
             <br />
             <sub>
                 <b>Connor</b>
@@ -243,9 +243,19 @@ For the reviewqs.py file **(All New Commands in Project 2)**
         </a>
         <br />
       </td>
+          <td align="center">
+          <a href="https://github.com/vasuagrawal19">
+              <img src="https://avatars.githubusercontent.com/u/26514851?v=4" width="75px;" alt=""/>
+              <br />
+              <sub>
+                  <b>Vasu</b>
+              </sub>
+          </a>
+          <br />
+      </td>
       <td align="center">
           <a href="https://github.com/ashwith161">
-              <img src="https://avatars.githubusercontent.com/u/89534400?v=4" width="50px;" alt=""/>
+              <img src="https://avatars.githubusercontent.com/u/89534400?v=4" width="75px;" alt=""/>
               <br />
               <sub>
                   <b>Ashwith</b>
@@ -255,20 +265,10 @@ For the reviewqs.py file **(All New Commands in Project 2)**
       </td>
       <td align="center">
           <a href="https://github.com/Capt-Fluffy-Bug">
-              <img src="https://avatars.githubusercontent.com/u/41867601?v=4" width="50px;" alt=""/>
+              <img src="https://avatars.githubusercontent.com/u/41867601?v=4" width="75px;" alt=""/>
               <br />
               <sub>
                   <b>Rahul</b>
-              </sub>
-          </a>
-          <br />
-      </td>
-      <td align="center">
-          <a href="https://github.com/vasuagrawal19">
-              <img src="https://avatars.githubusercontent.com/u/26514851?v=4" width="50px;" alt=""/>
-              <br />
-              <sub>
-                  <b>Vasu</b>
               </sub>
           </a>
           <br />
