@@ -137,7 +137,7 @@ This command adds each member in a group to their separate group text channel. T
 
 ![image](/data/media/autojoin.png)
 
-### Testing in Project 3
+## Testing in Project 3
 
 New test cases were written to cover the new functionality added and/or changed in Project 3. Not all functionality was able to be tested. Testing commands done through DMs was not possible, so we were limited in scope of what we could test. Wherever possible, new test cases were written.
 
