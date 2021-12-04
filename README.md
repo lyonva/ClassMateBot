@@ -1,4 +1,4 @@
-[Project 3 Delta Video](https://youtu.be/EpLe_EBi5BI)
+[Project 3 Delta Video](https://youtu.be/Si9o0D_Y90I)
 
 <p align="center"><img width=20.5% src="https://github.com/lyonva/ClassMateBot/blob/main/data/neworange.png"></p>
 <h1 align="center" >ClassMate Bot</h1>
@@ -136,6 +136,10 @@ This command automatically splits the existing members in the server into differ
 This command adds each member in a group to their separate group text channel. This will help the students to coordinate with other members of their group for working on their assignments and project. 
 
 ![image](/data/media/autojoin.png)
+
+### Testing in Project 3
+
+New test cases were written to cover the new functionality added and/or changed in Project 3. Not all functionality was able to be tested. Testing commands done through DMs was not possible, so we were limited in scope of what we could test. Wherever possible, new test cases were written.
 
 ---
 
