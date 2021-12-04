@@ -60,7 +60,7 @@ Once the new member joins the server, before giving them the access to the chann
 ![image](https://user-images.githubusercontent.com/32313919/140422661-ee3c4c68-8cb0-4032-b5a6-8192ee98ac10.png)
 
 
-### 2 - Project Voting
+### 2 - Project Voting **(Reworked on Project 3)**
 Voting for projects is a common occurence that many students must endure. With the addition of a voting system, this task is made easier by allowing student groups to vote thier favourites projects with the use of discord system. With the combination of the ClassMateBot grouping system, teams can easily vote their group into a project, switch their votes, or view the full list of projects that have been voted for.
 
 ![image](https://user-images.githubusercontent.com/32313919/140250549-8de514c0-d411-41fe-976c-6b43c7bd1edf.png)
